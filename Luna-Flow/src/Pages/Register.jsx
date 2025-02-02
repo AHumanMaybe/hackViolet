@@ -116,11 +116,6 @@ function Register() {
                     )}
                 </div>
     
-                {/* Collected Answers Section */}
-                <div className="mt-6 p-4 border rounded-md">
-                    <h2 className="text-lg font-semibold">Collected Answers</h2>
-                    <pre>{JSON.stringify(answers, null, 2)}</pre>
-                </div>
             </div>
         </div>
     );    
