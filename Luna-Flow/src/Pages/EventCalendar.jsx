@@ -105,10 +105,10 @@ const EventCalendar = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-6 bg-gradient-to-t from-[#A5B4FC] to-[#BAE6FD]">
+    <div className="font-primary min-h-screen flex items-center justify-center p-6 bg-gradient-to-t from-[#A5B4FC] to-[#BAE6FD]">
       <div className="flex flex-row space-x-6">
-        <div className="bg-gray-200 p-8 rounded-lg shadow-md w-[450px]">
-          <h1 className="text-3xl font-bold mb-6">Journal Cycle Calendar</h1>
+        <div className="bg-gray-200 p-8 rounded-lg w-[450px]">
+          <h1 className="text-3xl font-bold mb-6">Cycle Calendar</h1>
           <h2 className="text-xl font-semibold mb-4">Select a Date</h2>
           <Calendar onChange={handleDateChange} value={selectedDate} className="mb-4" />
           <Journal customTimestamp={formatDate(selectedDate)} />
@@ -121,7 +121,7 @@ const EventCalendar = () => {
                 <li key={index} className="border-b p-2 last:border-b-0">{event}</li> // Show event title
               ))
             ) : (
-              <p className="text-gray-500">No events for this date.</p>
+              <p className="text-gray-500">No entries for this date.</p>
             )}
           </ul>
         </div>

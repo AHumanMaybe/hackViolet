@@ -24,7 +24,7 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 const Dashboard = () => {
-  const [currentTime, setCurrentTime] = useState(new Date());
+
   const [view, setView] = useState('calendar'); // 'calendar', 'quickCheckIn', 'journalEntry'
 
   const [chatResponse, setChatResponse] = useState("");
@@ -87,16 +87,80 @@ const Dashboard = () => {
         }
     }
   };
+    const [currentTime, setCurrentTime] = useState(new Date());
+    const [currentDay, setCurrentDay] = useState(1);
+    const [phase, setPhase] = useState('');
+    const [latestQuestion, setLatestQuestion] = useState(null);
+    
+    const greetings = [
+        `Good morning, ${name}! Ready to take on the day?`,
+        `Hey ${name}, how’s your day going so far?`,
+        `Hello, ${name}! How’s everything feeling today?`,
+        `Morning, ${name}! How are you today?`,
+        `Hi there, ${name}! How’s your mood today?`,
+        `How’s it going, ${name}? Feeling good today?`,
+        `${name}, how are you holding up today?`,
+        `Hey ${name}, keeping busy today?`,
+        `Rise and shine, ${name}! How are you doing?`,
+        `What’s up, ${name}? How are you feeling today?`,
+        `Good morning, [name]! Ready to take on the day?`,
+        `Hey [name], how’s your day going so far?`,
+        `Hello, [name]! How’s everything feeling today?`,
+        `Morning, [name]! How are you today?`,
+        `Hi there, [name]! How’s your mood today?`,
+        `How’s it going, [name]? Feeling good today?`,
+        `[name], how are you holding up today?`,
+        `Hey [name], keeping busy today?`,
+        `Rise and shine, [name]! How are you doing?`,
+        `What’s up, [name]? How are you feeling today?`
+    ];
+    const [greeting, setGreeting] = useState('');
+    const [isFormVisible, setFormVisible] = useState(false);
+    const {currentUser, userLoggedIn} = useAuth();
+    
+  fetchLatestQuestion(); // Fetch latest questions and trigger AI summary
+  
+    useEffect(() => {
+        const timer = setInterval(() => {
+            setCurrentTime(new Date());
+        }, 1000);
+        
+        fetchLatestQuestion(); // Fetch latest questions and trigger AI summary
+      
+        const fetchAndLogCycleStartDate = async () => {
+            const startDate = await fetchCycleInfo();
+            const today = new Date();
+            const diffTime =  Math.abs(today - startDate);
+            const dayOfCycle = (Math.floor(diffTime / (1000 * 60 * 60 * 24)) % 28) + 1;
+            setCurrentDay(dayOfCycle);
 
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentTime(new Date());
-    }, 1000);
+            if (dayOfCycle >= 1 && dayOfCycle <= 5) {
+                setPhase('Period');
+            } else if (dayOfCycle >= 6 && dayOfCycle <= 13) {
+                setPhase('Follicular Phase');
+            } else if (dayOfCycle === 14) {
+                setPhase('Ovulation');
+            } else if (dayOfCycle >= 15 && dayOfCycle <= 28) {
+                setPhase('Luteal Phase');
+            }
+            else{
+                console.log("Failed");
+            }
+          
+            console.log({dayOfCycle});
+            console.log({phase});
+        }
 
-    fetchLatestQuestion(); // Fetch latest questions and trigger AI summary
-
-    return () => clearInterval(timer);
-  }, []);
+        fetchAndLogCycleStartDate();        
+        if (currentUser && currentUser.email){ 
+            console.log(currentUser.email);
+            setGreeting(greetings[Math.floor(Math.random() * greetings.length)].replace('[name]', currentUser.email));
+        }
+        else {
+            setGreeting("Helllllloo!!");
+        }
+        return () => clearInterval(timer);
+    }, []);
 
   const handleButtonClick = (type) => {
     setView(type);
@@ -105,6 +169,7 @@ const Dashboard = () => {
   const closeView = () => {
     setView('calendar');
   };
+
 
   const fetchLatestQuestion = async () => {
     if (!userLoggedIn) return; // Ensure userID is provided
@@ -126,9 +191,9 @@ const Dashboard = () => {
           
           generateSummary(latestQuestion); // Send data to ChatGPT immediately
         }
-      } else {
+        } else {
         console.log("No document found!");
-      }
+        }
     } catch (error) {
       console.error("Error fetching latest question:", error);
     }
@@ -171,35 +236,40 @@ const Dashboard = () => {
 };
 
   return (
-    <div className={`flex font-primary flex-col lg:flex-row h-screen pl-64 bg-gradient-to-t from-indigo-300 to-sky-200`}>
-      {/* Main Wrapper */}
-      <div className="flex flex-col lg:flex-row rounded-xl bg-white/50 p-6 m-7 w-full h-full">
-        {/* Left Column: Calendar and Today's Update */}
-        <div className="flex flex-col w-full lg:w-1/4 space-y-4 p-6">
-          <div className="flex rounded-xl bg-white p-4">
-            <h1 className="text-2xl text-center w-full">Log Today's Update?</h1>
+    <div className="flex font-primary flex-col lg:flex-row h-screen pl-90 pb-14 bg-gradient-to-tl from-cyan-300 to-red-300 ">
+      {/* Main Wrapper with rounded corners */}
+      <div className="flex flex-col lg:flex-row rounded-[3vw] bg-white/50 p-6 m-8 w-full h-full">
+        
+        {/* Left Column: Calendar and Today's Update (Expands to Today) */}
+        <div className="flex flex-col w-full lg:w-3/4 space-y-6 p-4">
+          {/* Today's Update */}
+          <div className="flex flex-col rounded-[1.5vw] bg-white p-4">
+            <h1 className="text-[1.3vw] text-center font-bold p-2 w-full">Log Today's Update?</h1>
             <div className="flex space-x-4">
               <button
                 onClick={() => handleButtonClick('quickCheckIn')}
-                className="border p-2 rounded w-full bg-teal-500 text-white"
+                className="w-full h-[200px] rounded-[1.2vw] drop-shadow-md text-black/70 hover:text-white flex flex-col items-center justify-center text-center text-xl font-semibold
+          bg-amber-400/80 transition-transform duration-500 ease-[cubic-bezier(0.23,1,0.320,1)]
+          hover:rotate-x-6 hover:rotate-y-6 hover:scale-103"
               >
                 Quick Check-In
               </button>
               <button
                 onClick={() => handleButtonClick('journalEntry')}
-                className="border p-2 rounded w-full bg-indigo-500 text-white"
-              >
+                className="w-full h-[200px] rounded-[1.2vw] drop-shadow-md text-black/70 hover:text-white flex flex-col items-center justify-center text-center text-xl font-semibold
+          bg-indigo-400/80 transition-transform duration-500 ease-[cubic-bezier(0.23,1,0.320,1)]
+          hover:rotate-x-6 hover:rotate-y-6 hover:scale-103">
                 Journal Entry
               </button>
             </div>
           </div>
-
           {/* Conditional rendering */}
           {view === 'calendar' && (
-            <div className="flex bg-white rounded-xl p-4">
-              <h2 className="text-center w-full">Calendar</h2>
-              <Calendar />
-            </div>
+            <div className="flex flex-col bg-white rounded-[1.5vw] p-4">
+            <h2 className="text-[1.3vw] text-center font-bold w-full p-2 mb-2">Mini Calendar</h2>
+            <Calendar />
+          </div>
+        </div>
           )}
 
           {view === 'quickCheckIn' && (
@@ -246,22 +316,33 @@ const Dashboard = () => {
           )}
         </div>
 
-        {/* Center Column: Today */}
-        <div className="flex justify-end w-full lg:w-1/2 ml-auto">
-          <div className="flex-1 bg-white/70 rounded-xl p-6 m-1 w-full max-w-md">
-            <h2 className="text-2xl font-semibold text-center m-6">{formatDate(currentTime)}</h2> {/* Display current weekday */}
-            <p>{chatResponse ? chatResponse : "Loading summary..."}</p>
-            <p className="text-2xl text-center font-bold m-10">Day 1</p>
-            <p className="text-left">Current phase:</p>
-            <p className="text-left">Expect</p>
-            <button className="bg-indigo-500 text-white py-3 px-6 rounded-full hover:bg-indigo-500 cursor-pointer block mx-auto">
+        {/* Right Column: Today (Always at the Right) */}
+        <div className="flex justify-end w-full lg:w-1/3 ml-auto p-4">
+          <div className="flex-1 bg-white/70 rounded-[1.5vw] p-8 w-full max-w-lg">
+            <h2 className="text-[1.3vw] font-black text-center m-3">Today</h2>
+            <p className="text-2xl text-center text-gray-500">{formatDate(currentTime)}</p>
+            <p className="text-[3vw] text-center font-bold m-6">Day 1</p>
+            <p className="text-left text-xl">Current phase:</p>
+            <p className="text-left text-xl">Expect</p>
+            <button
+              onClick={handleLearnButton}
+              className="text-sm drop-shadow-md bg-indigo-500 m-6 text-white py-2 px-6 rounded-full hover:outline cursor-pointer block mx-auto"
+            >
               Learn More
             </button>
-            <p className="text-left">Upcoming week</p>
+            <p className="text-left text-xl pt-10">Upcoming week</p>
           </div>
         </div>
       </div>
+
+      {/* Conditional Form Display */}
+      {isFormVisible && (
+        <div className="absolute bottom-2/5 left-0 right-1/4 top-1/5 bg-gray-300 p-4 z-10">
+          <UpdateForm onFormComplete={toggleForm} />
+        </div>
+      )}
     </div>
+  </div>
   );
 };
 
