@@ -1,3 +1,6 @@
+import * as functions from 'firebase-functions';
+import { Configuration, OpenAIApi } from 'openai';
+
 /**
  * Import function triggers from their respective submodules:
  *
@@ -17,3 +20,23 @@ const logger = require("firebase-functions/logger");
 //   logger.info("Hello logs!", {structuredData: true});
 //   response.send("Hello from Firebase!");
 // });
+
+const config = new Configuration({
+  apiKey: process.env.OPENAI_API_KEY,
+});
+const openai = new OpenAIApi(config);
+
+export const chatWithGPT = functions.https.onCall(async (data, context) => {
+  try {
+    const response = await openai.createCompletion({
+      model: 'text-davinci-003', // Or another suitable model
+      prompt: data.prompt,
+      max_tokens: 100,
+    });
+
+    return response.data.choices[0].text;
+  } catch (error) {
+    console.error(error);
+    throw new functions.https.HttpsError('internal', 'Error calling ChatGPT');
+  }
+});
