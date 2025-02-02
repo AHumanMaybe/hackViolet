@@ -71,7 +71,7 @@ function Register() {
     };
 
     return (
-        <div>
+        <div className="font-primary">
             {currentIndex < cards.length ? (
                 <>
                     {cards[currentIndex].type === "info" ? (
