@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
+import UpdateForm from './UpdateForm';
 
 const Dashboard = ({ name }) => {
   const [currentTime, setCurrentTime] = useState(new Date());
@@ -17,6 +18,7 @@ const Dashboard = ({ name }) => {
     `What’s up, ${name}? How are you feeling today?`
   ];
   const [greeting, setGreeting] = useState('');
+  const [isFormVisible, setFormVisible] = useState(false);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -28,12 +30,12 @@ const Dashboard = ({ name }) => {
     return () => clearInterval(timer);
   }, []);
 
-  const handleButtonClick = () => {
- 
+  const toggleForm = () => {
+    setFormVisible(!isFormVisible);
   };
 
   const handleLearnButton = () => {
-
+    // Logic for Learn More button
   };
 
   const formatTime = (time) => {
@@ -57,33 +59,46 @@ const Dashboard = ({ name }) => {
       <div className="w-1/4 bg-gray-100 p-6 shadow-lg">
         <h2 className="text-2xl font-semibold">Today,</h2>
         <p className="text-2xl">{formatDate(currentTime)}</p>
-        <p className = "text-2xl">Day 1</p>
-        <p className="">Current phase:</p>
-        <p className="">Expect</p>
-        <button onClick = {handleLearnButton}
-        className = "bg-green-500 text-white py-3 px-6 rounded-lg hover:bg-green-700 cursor-pointer">Learn More</button>
-        <p className="">Upcoming week</p>
+        <p className="text-2xl">Day 1</p>
+        <p>Current phase:</p>
+        <p>Expect</p>
+        <button
+          onClick={handleLearnButton}
+          className="bg-green-500 text-white py-3 px-6 rounded-lg hover:bg-green-700 cursor-pointer"
+        >
+          Learn More
+        </button>
+        <p>Upcoming week</p>
       </div>
-      <div className = "absolute bottom-2/5 left-0 right-1/4 top-1/5 bg-gray-300 p-4">
-        <h1 className = "text-2xl">Log Today's Update?</h1>
-        <div className="flex space-x-4">
-          <button
-            onClick={handleButtonClick}
-            className="border p-2 rounded w-full bg-blue-500 text-white"
-          >
-            Quick Check-In
-          </button>
-          <button
-            onClick={handleButtonClick}
-            className="border p-2 rounded w-full bg-green-500 text-white"
-          >
-            Journal Entry
-          </button>
+      {!isFormVisible && (
+        <div className="absolute bottom-2/5 left-0 right-1/4 top-1/5 bg-gray-300 p-4 z-10">
+          <h1 className="text-2xl">Log Today's Update?</h1>
+          <div className="flex space-x-4">
+            <button
+              onClick={toggleForm}
+              className="border p-2 rounded w-full bg-blue-500 text-white"
+            >
+              Quick Check-In
+            </button>
+            <button
+              onClick={toggleForm}
+              className="border p-2 rounded w-full bg-green-500 text-white"
+            >
+              Journal Entry
+            </button>
+          </div>
         </div>
-      </div>
+      )}
+
+      {isFormVisible && (
+        <div className="absolute bottom-2/5 left-0 right-1/4 top-1/5 bg-gray-300 p-4 z-10">
+          <UpdateForm onFormComplete={toggleForm}/>
+        </div>
+      )}
+
       <div className="absolute bottom-0 left-0 right-1/4 top-3/5 bg-gray-200 p-4">
         <h2>Calendar</h2>
-        <Calendar></Calendar>
+        <Calendar />
       </div>
     </div>
   );
