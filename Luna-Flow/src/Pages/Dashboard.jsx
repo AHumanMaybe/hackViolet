@@ -150,7 +150,7 @@ const Dashboard = () => {
   
 
   return (
-    <div className="flex flex-col lg:flex-row h-screen pl-64 bg-gradient-to-t from-indigo-300 to-sky-200">
+    <div className="flex font-primary flex-col lg:flex-row h-screen pl-64 bg-gradient-to-t from-indigo-300 to-sky-200">
       {/* Main Wrapper with rounded corners */}
       <div className="flex flex-col lg:flex-row rounded-xl bg-white/50 p-6 m-7 w-full h-full">
         
