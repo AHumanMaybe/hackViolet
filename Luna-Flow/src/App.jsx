@@ -6,6 +6,7 @@ import Navbar from './Components/Navbar'
 import Login from './Pages/Login'
 import EventCalendar from './Pages/EventCalendar';
 import Dashboard from './Pages/Dashboard'
+import Settings from './Pages/Settings'
 import Register from './Pages/Register'
 import Journal from './Components/Journal';
 import Statistics from './Pages/Statistics';
@@ -29,6 +30,7 @@ function App() {
           <Route path='/jour' element={<Journal/>}/>
           <Route path='/eventcalendar' element={<EventCalendar/>}/>
           <Route path='/stats' element={<Statistics/>}/>
+          <Route path='/settings' element={<Settings/>}/>
         </Routes>
       </BrowserRouter>  
     </>
