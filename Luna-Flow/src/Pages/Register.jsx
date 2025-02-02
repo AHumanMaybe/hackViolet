@@ -71,7 +71,7 @@ function Register() {
     };
 
     return (
-        <div className="font-primary">
+        <div className="flex pl-64">
             {currentIndex < cards.length ? (
                 <>
                     {cards[currentIndex].type === "info" ? (

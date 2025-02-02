@@ -9,7 +9,7 @@ import Register from './Pages/Register'
 import Journal from './Components/Journal';
 import Statistics from './Pages/Statistics';
 import './App.css'
-
+//hi
 function App() {
   
   const { currentUser, userLoggedIn } = useAuth()
