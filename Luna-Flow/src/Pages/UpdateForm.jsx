@@ -18,39 +18,28 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-function Register() {
+function UpdateForm({onFormComplete}) {
+
     const { currentUser } = useAuth();
     const [answers, setAnswers] = useState({});
     const [currentIndex, setCurrentIndex] = useState(0);
 
-    // Unified card structure
     const cards = [
-        { id: 1, type: "info", question: "What is your name?" },
-        { id: 2, type: "info", question: "What is your favorite color?" },
-        { id: 3, type: "multi", question: "What is the capital of France?", options: ["Paris", "Berlin", "Madrid"] },
-        { id: 4, type: "multi", question: "Which planet is known as the Red Planet?", options: ["Mars", "Venus", "Jupiter"] },
-        { id: 5, type: "info", question: "Where do you live?" },
-        { id: 6, type: "multi", question: "What is 2 + 2?", options: ["3", "4", "5"] }
-    ];
+        { id: 1, type: "multi", question: "Period today?", options: ["Spotting", "Light", "Medium", "Heavy", "Super heavy"] },
+        { id: 2, type: "multi", question: "How are you feeling?", options: ["Fine", "Happy", "Sad", "Angry", "Irritable", "Indifferent", "Grateful"] },
+        { id: 3, type: "multi", question: "Was there any pain?", options: ["Cramping", "Headache", "Breast Tenderness", "Ovulation", "Lower Back"] },
+        { id: 4, type: "multi", question: "Sex life?", options: ["Protected", "Unprotected", "Withdrawl", "High sex drive", "Low sex drive"] },
+        { id: 5, type: "multi", question: "Did you have any energy today?", options: ["Productive", "Exhausted", "Energized", "Tired", "Brain fog"] },
+        { id: 6, type: "multi", question: "How was your mindset?", options: ["Motivated", "Unmotivated", "Brain fog", "Stressed"] },
+        { id: 7, type: "multi", question: "Cravings", options: ["Sweet", "Spicy", "Salty", "Greasy", "Carbs"] },
+        { id: 8, type: "multi", question: "How much sleep did you get last night?", options: ["0 hr", "1-3 hr", "3-6 hr", "6-9 hr", "9+ hr"] }
+    ]; 
 
-    // Save answers with question text as keys
     const handleAnswerChange = (id, value) => {
         const questionText = cards.find(card => card.id === id).question;
         setAnswers((prev) => ({ ...prev, [questionText]: value }));
     };
 
-    const formatTimestamp = () => {
-        const date = new Date();
-        const year = date.getFullYear();
-        const month = (date.getMonth() + 1).toString().padStart(2, "0");
-        const day = date.getDate().toString().padStart(2, "0");
-        const hours = date.getHours().toString().padStart(2, "0");
-        const minutes = date.getMinutes().toString().padStart(2, "0");
-        const seconds = date.getSeconds().toString().padStart(2, "0");
-        return `${year}-${month}-${day}_${hours}-${minutes}-${seconds}`;
-    };
-
-    // Handle next button
     const handleNext = async () => {
         if (currentIndex < cards.length - 1) {
             setCurrentIndex((prev) => prev + 1);
@@ -64,14 +53,26 @@ function Register() {
                     [timestamp]: answers
                 }, { merge: true });
                 console.log("Data successfully sent to Firebase!");
+                onFormComplete();
             } catch (error) {
                 console.error("Error writing to Firestore:", error);
             }
         }
     };
 
+    const formatTimestamp = () => {
+        const date = new Date();
+        const year = date.getFullYear();
+        const month = (date.getMonth() + 1).toString().padStart(2, "0");
+        const day = date.getDate().toString().padStart(2, "0");
+        const hours = date.getHours().toString().padStart(2, "0");
+        const minutes = date.getMinutes().toString().padStart(2, "0");
+        const seconds = date.getSeconds().toString().padStart(2, "0");
+        return `${year}-${month}-${day}_${hours}-${minutes}-${seconds}`;
+    };
+
     return (
-        <div className="flex pl-64">
+        <div>
             {currentIndex < cards.length ? (
                 <>
                     {cards[currentIndex].type === "info" ? (
@@ -106,6 +107,6 @@ function Register() {
             </div>
         </div>
     );
-}
+};
 
-export default Register;
+export default UpdateForm;
