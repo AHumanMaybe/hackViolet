@@ -4,11 +4,13 @@ import { useAuth } from "./Contexts/authContext";
 import { Routes, Route, BrowserRouter, Navigate } from "react-router-dom"
 import Navbar from './Components/Navbar'
 import Login from './Pages/Login'
+import EventCalendar from './Pages/EventCalendar';
 import Dashboard from './Pages/Dashboard'
 import Register from './Pages/Register'
 import Journal from './Components/Journal';
 import Statistics from './Pages/Statistics';
 import './App.css'
+import Calendar from 'react-calendar';
 
 function App() {
   
@@ -25,6 +27,7 @@ function App() {
           <Route path = "/login" element={<Login/>}/>
           <Route path="/reg" element={<Register/>}/>
           <Route path='/jour' element={<Journal/>}/>
+          <Route path='/eventcalendar' element={<EventCalendar/>}/>
           <Route path='/stats' element={<Statistics/>}/>
         </Routes>
       </BrowserRouter>  

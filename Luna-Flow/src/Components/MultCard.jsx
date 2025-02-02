@@ -9,7 +9,7 @@ function MultCard({ question, id, options, onAnswerSelect, selectedAnswers }) {
     };
 
     return (
-        <div className="p-4 border rounded-lg shadow-md">
+        <div className="flex p-4 border rounded-lg shadow-md">
             {/* Display question */}
             <p className="text-lg font-semibold mb-2">{question}</p>
 
