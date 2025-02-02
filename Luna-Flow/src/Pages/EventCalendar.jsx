@@ -119,7 +119,7 @@ const EventCalendar = () => {
         
         {/* Right Column: Logged Journal */}
         <div className="bg-white p-8 m-6 rounded-[1.5vw] w-[300px]">
-          <h3 className="text-lg font-semibold">
+          <h3 className="text-lg pb-6 font-semibold">
             Logged journal on {formatDate(selectedDate).substring(0, formatDate(selectedDate).indexOf("_"))}:
           </h3>
           <ul>
@@ -128,7 +128,7 @@ const EventCalendar = () => {
                 <li key={index} className="border-b p-2 last:border-b-0">{event}</li>
               ))
             ) : (
-              <p className="text-gray-500 mt-8">No entries for this date.</p>
+              <p className="text-gray-600 mt-8">No entries for this date.</p>
             )}
           </ul>
         </div>

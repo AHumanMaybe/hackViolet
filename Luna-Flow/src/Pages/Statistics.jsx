@@ -11,7 +11,7 @@ const Statistics = () => {
       { date: '2024-01-15', phase: 'Ovulation', mood: 'Happy' },
       { date: '2024-02-01', phase: 'Luteal', mood: 'Tired' }
     ]);
-    setMoodData([5, 4, 3, 2, 1]);
+    setMoodData(["Energetic", "Unmotivated", "Sad", "Productive", "Tired"]);
     setCravingsData(['Chocolate', 'Salty snacks', 'Fruit']);
   };
 
@@ -50,13 +50,13 @@ const Statistics = () => {
         {/* Mood and Cravings Data */}
         <div className="bg-gray-100/90 p-6 ml-2 m-6 rounded-[1.5vw] w-[300px]">
           <h2 className="text-xl font-semibold mb-3">Mood Tracker</h2>
-          <ul className="mb-6 text-indigo-600">
+          <ul className="mb-6 text-indigo-800">
             {moodData.map((mood, index) => (
               <li key={index} className="p-2 border:indigo-400 last:border-b-0">Day {index + 1}: Mood Level {mood}</li>
             ))}
           </ul>
           <h2 className="text-xl font-semibold mb-3">Cravings</h2>
-          <ul className="text-indigo-600">
+          <ul className="text-indigo-800">
             {cravingsData.map((craving, index) => (
               <li key={index} className="p-2 border-indigo last:border-b-0">{craving}</li>
             ))}

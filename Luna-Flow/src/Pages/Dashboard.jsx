@@ -241,7 +241,7 @@ const Dashboard = () => {
         {/* Greeting and Chat Response in a flex column, above the Log Today's Update */}
         <div className="flex flex-col items-center lg:w-1/2 m-4 w-full" >
           <div className="flex flex-col h-full justify-between space-y-4 items-center rounded-[1.2vw]">
-            <h1 className="text-[2vw] font-bold mt-25 mb-4 text-transparent bg-clip-text font-extrabold bg-gradient-to-tr from-rose-800/80 to-blue-800/80">{greeting}</h1>
+            <h1 className="text-[2vw] font-bold mt-25 mb-4 ml-3 text-transparent bg-clip-text font-extrabold bg-gradient-to-tr from-rose-800/80 to-blue-800/80">{greeting}</h1>
           </div>
           <div className="flex flex-col items-center rounded-[1.2vw] bg-white p-6">
             <h2 className="text-xl">{loading ? "Loading..." : chatResponse}</h2>
@@ -343,14 +343,14 @@ const Dashboard = () => {
             <h2 className="text-[1.3vw] font-black text-center m-3">Today</h2>
             <p className="text-2xl text-center text-gray-500">{formatTimestamp(currentTime).substring(0, formatTimestamp(currentTime).indexOf("_"))}</p>
             <p className="text-[3vw] text-center font-bold m-6">Day {currentDay}</p>
-            <p className="text-left text-2xl font-semibold">Current phase:</p>
-            <p className="text-left text-xl">{phase}</p>
+            <p className="text-left text-xl text-indigo-500 font-regular">Current phase:</p>
+            <p className="text-left text-3xl font-semibold">{phase}</p>
             <p className="text-left text-lg"></p>
             <button
               onClick={handleLearnButton}
-              className="text-sm drop-shadow-md bg-indigo-500 mt-20 text-white py-2 px-6 rounded-full hover:outline cursor-pointer block mx-auto"
+              className="text-lg drop-shadow-lg bg-indigo-500/90 mt-40 hover:font-bold text-white py-2 px-6 rounded-full hover:outline cursor-pointer block mx-auto"
             >
-              Learn More
+              Learn More ➜
             </button>
           </div>
         </div>

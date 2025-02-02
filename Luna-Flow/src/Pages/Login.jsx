@@ -90,7 +90,7 @@ function Login() {
           {/* Main Wrapper with rounded corners */}
           <div className="flex flex-col lg:flex-row rounded-[3vw] justify-center bg-white/50 p-6 m-8 w-full h-full">
             <div className="flex flex-col items-center p-20 justify-center rounded-[1.5vw] h-full text-black">
-             <h1 className="mb-5 text-4xl font-bold">Welcome to LunaFlow</h1>
+             <h1 className="mb-5 text-[2vw] font-bold text-transparent bg-clip-text font-extrabold bg-gradient-to-tr from-rose-800/80 to-blue-800/80">Welcome to LunaFlow</h1>
               <div className="bg-white p-20 m-8 rounded-xl w-[800px] text-center shadow-lg shadow-[rgba(255, 130, 207, 0.97)_0px_0px_15px_0px,rgba(14, 191, 250, 0.5)_0px_0px_15px_0px]">
                 {isMakeNewAccount ? (
                   <>
@@ -121,17 +121,17 @@ function Login() {
                     />
                     <button
                       onClick={handleRegister}
-                      className="w-full p-3 mt-10 mb-15 bg-amber-300/80 hover:bg-amber-500 hover:font-semibold text-black rounded-xl cursor-pointer 
+                      className="w-full p-3 mt-10 mb-15 bg-indigo-300/80 hover:bg-indigo-500 hover:font-semibold text-black hover:text-white rounded-xl cursor-pointer 
                         transition-all duration-300 ease-in-out 
                         hover:shadow-xl hover:shadow-sky-200"
                     >
-                      Start your journey now
+                      Start your journey now ➜
                     </button>
                     <p className="mt-4">
                       Come here often?{" "}
                       <span
                         onClick={() => setIsMakeNewAccount(false)}
-                        className="text-indigo-500 font-bold hover:text-amber-400 cursor-pointer"
+                        className="text-indigo-500 font-bold hover:text-amber-500 cursor-pointer"
                       >
                            Login here
                       </span>
@@ -158,11 +158,11 @@ function Login() {
                     />
                     <button
                         onClick={handleLogin}
-                        className="w-full p-3 mt-10 mb-15 bg-amber-300/80 hover:bg-amber-400 hover:font-semibold text-black rounded-xl cursor-pointer 
-                                    transition-all duration-300 ease-in-out 
-                                    hover:shadow-xl hover:shadow-sky-200"
+                        className="w-full p-3 mt-10 mb-15 bg-indigo-300/80 hover:bg-indigo-500 hover:font-semibold text-black hover:text-white rounded-xl cursor-pointer 
+                        transition-all duration-300 ease-in-out 
+                        hover:shadow-xl hover:shadow-sky-200"
                         >
-                        Let's go
+                        Let's go ➜
                     </button>
                     <p className="mt-4 text-red-500">{errorMessage}</p>
                     <p className="mt-4">
