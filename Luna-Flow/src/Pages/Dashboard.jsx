@@ -138,6 +138,17 @@ const Dashboard = () => {
     setLoading(false);
   };
 
+  const handleButtonClick = () => {
+    console.log("Button clicked!");
+    // Add logic for Quick Check-In and Journal Entry here
+  };
+  
+  const handleLearnButton = () => {
+    console.log("Learn More clicked!");
+    // Add logic for handling Learn More button
+  };
+  
+
   return (
     <div className="flex flex-col lg:flex-row h-screen pl-64 bg-gradient-to-t from-indigo-300 to-sky-200">
       {/* Main Wrapper with rounded corners */}
