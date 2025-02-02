@@ -2,31 +2,38 @@ import React, { useState, useEffect } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import UpdateForm from './UpdateForm';
+import { useAuth } from '../Contexts/authContext';
 
-const Dashboard = ({ name }) => {
+const Dashboard = () => {
   const [currentTime, setCurrentTime] = useState(new Date());
   const greetings = [
-    `Good morning, ${name}! Ready to take on the day?`,
-    `Hey ${name}, how’s your day going so far?`,
-    `Hello, ${name}! How’s everything feeling today?`,
-    `Morning, ${name}! How are you today?`,
-    `Hi there, ${name}! How’s your mood today?`,
-    `How’s it going, ${name}? Feeling good today?`,
-    `${name}, how are you holding up today?`,
-    `Hey ${name}, keeping busy today?`,
-    `Rise and shine, ${name}! How are you doing?`,
-    `What’s up, ${name}? How are you feeling today?`
+    `Good morning, [name]! Ready to take on the day?`,
+    `Hey [name], how’s your day going so far?`,
+    `Hello, [name]! How’s everything feeling today?`,
+    `Morning, [name]! How are you today?`,
+    `Hi there, [name]! How’s your mood today?`,
+    `How’s it going, [name]? Feeling good today?`,
+    `[name], how are you holding up today?`,
+    `Hey [name], keeping busy today?`,
+    `Rise and shine, [name]! How are you doing?`,
+    `What’s up, [name]? How are you feeling today?`
   ];
   const [greeting, setGreeting] = useState('');
   const [isFormVisible, setFormVisible] = useState(false);
+  const {currentUser, userLoggedIn} = useAuth();
 
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentTime(new Date());
     }, 1000);
     
-    setGreeting(greetings[Math.floor(Math.random() * greetings.length)]);
-
+    if (currentUser && currentUser.email){ 
+        console.log(currentUser.email);
+        setGreeting(greetings[Math.floor(Math.random() * greetings.length)].replace('[name]', currentUser.email));
+    }
+    else {
+        setGreeting("Helllllloo!!");
+    }
     return () => clearInterval(timer);
   }, []);
 
