@@ -10,6 +10,7 @@ import MultCard from "../Components/MultCard";
 import Journal from "../Components/Journal";
 import axios from "axios";
 
+// Firebase configuration
 const firebaseConfig = {
     apiKey: "AIzaSyBHZGxb3ckOGzr-Jdrfaxp4kJOJ-m6zqE0",
     authDomain: "hack-violet-32ab4.firebaseapp.com",
@@ -24,19 +25,18 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 const Dashboard = () => {
-
+  
   const [view, setView] = useState('calendar'); // 'calendar', 'quickCheckIn', 'journalEntry'
-
   const [chatResponse, setChatResponse] = useState("");
   const [loading, setLoading] = useState(false);
-
-  const { currentUser, userLoggedIn} = useAuth()
-
-  // Function to format the date to show the current weekday
-  const formatDate = (date) => format(date, 'EEEE'); // 'EEEE' formats to the full weekday name
-
   const [answers, setAnswers] = useState({});
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [currentTime, setCurrentTime] = useState(new Date());
+  const [currentDay, setCurrentDay] = useState(1);
+  const [phase, setPhase] = useState('');
+  const [greeting, setGreeting] = useState('');
+  const [isFormVisible, setFormVisible] = useState(false);
+  const { currentUser, userLoggedIn } = useAuth();
 
   const cards = [
     { id: 1, type: "multi", question: "Period today?", options: ["Spotting", "Light", "Medium", "Heavy", "Super Heavy", "Skip"] },
@@ -52,10 +52,22 @@ const Dashboard = () => {
     { id: 11, type: "info", question: "Weight" }
   ];
   
-
   const handleAnswerChange = (id, value) => {
     const questionText = cards.find(card => card.id === id).question;
     setAnswers((prev) => ({ ...prev, [questionText]: value }));
+  };
+
+  const handleLearnButton = () => {
+    const phaseUrls = {
+      "Menstrual Phase": "https://flo.health/menstrual-cycle/phases/menstrual-phase",
+      "Follicular Phase": "https://www.healthline.com/health/womens-health/follicular-phase",
+      "Ovulation Phase": "https://www.mayoclinic.org/tests-procedures/ovulation-prediction-kits/about/pac-20393607",
+      "Luteal Phase": "https://www.verywellhealth.com/luteal-phase-2619135",
+    };
+  
+    // Redirect user to the corresponding phase website
+    const url = phaseUrls[phase] || "https://flo.health/menstrual-cycle"; // Default to general info
+    window.location.href = url;
   };
 
   const formatTimestamp = () => {
@@ -67,7 +79,7 @@ const Dashboard = () => {
     const minutes = date.getMinutes().toString().padStart(2, "0");
     const seconds = date.getSeconds().toString().padStart(2, "0");
     return `${year}-${month}-${day}_${hours}-${minutes}-${seconds}`;
-};
+  };
 
   const handleNext = async () => {
     if (currentIndex < cards.length - 1) {
@@ -81,95 +93,73 @@ const Dashboard = () => {
             }, { merge: true });
 
             console.log("Data successfully sent to Firebase!");
-            setView("calendar")
+            setView("calendar");
         } catch (error) {
             console.error("Error writing to Firestore:", error);
         }
     }
   };
-    const [currentTime, setCurrentTime] = useState(new Date());
-    const [currentDay, setCurrentDay] = useState(1);
-    const [phase, setPhase] = useState('');
-    const [latestQuestion, setLatestQuestion] = useState(null);
-    
-    const greetings = [
-        `Good morning, ${name}! Ready to take on the day?`,
-        `Hey ${name}, how’s your day going so far?`,
-        `Hello, ${name}! How’s everything feeling today?`,
-        `Morning, ${name}! How are you today?`,
-        `Hi there, ${name}! How’s your mood today?`,
-        `How’s it going, ${name}? Feeling good today?`,
-        `${name}, how are you holding up today?`,
-        `Hey ${name}, keeping busy today?`,
-        `Rise and shine, ${name}! How are you doing?`,
-        `What’s up, ${name}? How are you feeling today?`,
-        `Good morning, [name]! Ready to take on the day?`,
-        `Hey [name], how’s your day going so far?`,
-        `Hello, [name]! How’s everything feeling today?`,
-        `Morning, [name]! How are you today?`,
-        `Hi there, [name]! How’s your mood today?`,
-        `How’s it going, [name]? Feeling good today?`,
-        `[name], how are you holding up today?`,
-        `Hey [name], keeping busy today?`,
-        `Rise and shine, [name]! How are you doing?`,
-        `What’s up, [name]? How are you feeling today?`
-    ];
-    const [greeting, setGreeting] = useState('');
-    const [isFormVisible, setFormVisible] = useState(false);
-    const {currentUser, userLoggedIn} = useAuth();
-    
-  fetchLatestQuestion(); // Fetch latest questions and trigger AI summary
-  
-    useEffect(() => {
-        const timer = setInterval(() => {
-            setCurrentTime(new Date());
-        }, 1000);
-        
-        fetchLatestQuestion(); // Fetch latest questions and trigger AI summary
+
+  const greetings = [
+      `Good morning, ${currentUser ? currentUser.email : 'there'}! Ready to take on the day?`,
+      `Hey ${currentUser ? currentUser.email : 'there'}, how’s your day going so far?`,
+      `Hello, ${currentUser ? currentUser.email : 'there'}! How’s everything feeling today?`,
+      `Morning, ${currentUser ? currentUser.email : 'there'}! How are you today?`,
+      `Hi there, ${currentUser ? currentUser.email : 'there'}! How’s your mood today?`,
+      `How’s it going, ${currentUser ? currentUser.email : 'there'}? Feeling good today?`,
+      `${currentUser ? currentUser.email : 'there'}, how are you holding up today?`,
+      `Hey ${currentUser ? currentUser.email : 'there'}, keeping busy today?`,
+      `Rise and shine, ${currentUser ? currentUser.email : 'there'}! How are you doing?`,
+      `What’s up, ${currentUser ? currentUser.email : 'there'}? How are you feeling today?`
+  ];
+
+  useEffect(() => {
+      const timer = setInterval(() => {
+          setCurrentTime(new Date());
+      }, 1000);
       
-        const fetchAndLogCycleStartDate = async () => {
-            const startDate = await fetchCycleInfo();
-            const today = new Date();
-            const diffTime =  Math.abs(today - startDate);
-            const dayOfCycle = (Math.floor(diffTime / (1000 * 60 * 60 * 24)) % 28) + 1;
-            setCurrentDay(dayOfCycle);
+      const fetchAndLogCycleStartDate = async () => {
+          const startDate = await fetchCycleInfo();
+          const today = new Date();
+          const diffTime = Math.abs(today - startDate);
+          const dayOfCycle = Math.floor(diffTime / (1000 * 60 * 60 * 24)) % 28 + 1;
+          setCurrentDay(dayOfCycle);
+        
+          if (dayOfCycle >= 1 && dayOfCycle <= 5) {
+              setPhase('Period');
+          } else if (dayOfCycle >= 6 && dayOfCycle <= 13) {
+              setPhase('Follicular Phase');
+          } else if (dayOfCycle === 14) {
+              setPhase('Ovulation');
+          } else if (dayOfCycle >= 15 && dayOfCycle <= 28) {
+              setPhase('Luteal Phase');
+          }
+      }
 
-            if (dayOfCycle >= 1 && dayOfCycle <= 5) {
-                setPhase('Period');
-            } else if (dayOfCycle >= 6 && dayOfCycle <= 13) {
-                setPhase('Follicular Phase');
-            } else if (dayOfCycle === 14) {
-                setPhase('Ovulation');
-            } else if (dayOfCycle >= 15 && dayOfCycle <= 28) {
-                setPhase('Luteal Phase');
-            }
-            else{
-                console.log("Failed");
-            }
-          
-            console.log({dayOfCycle});
-            console.log({phase});
-        }
+      fetchLatestQuestion();
 
-        fetchAndLogCycleStartDate();        
-        if (currentUser && currentUser.email){ 
-            console.log(currentUser.email);
-            setGreeting(greetings[Math.floor(Math.random() * greetings.length)].replace('[name]', currentUser.email));
-        }
-        else {
-            setGreeting("Helllllloo!!");
-        }
-        return () => clearInterval(timer);
-    }, []);
+      fetchAndLogCycleStartDate();        
+
+      if (currentUser && currentUser.email) {
+          setGreeting(greetings[Math.floor(Math.random() * greetings.length)]);
+      } else {
+          setGreeting("Hello! Ready for today?");
+      }
+      return () => clearInterval(timer);
+  }, [currentUser]);
+
+  const fetchCycleInfo = async () => {
+    // Make sure to implement your logic to fetch the cycle start date
+    return new Date(); // Placeholder return value for now
+  }
 
   const handleButtonClick = (type) => {
-    setView(type);
+      setView(type);
   };
 
   const closeView = () => {
-    setView('calendar');
+      setView('calendar');
   };
-
 
   const fetchLatestQuestion = async () => {
     if (!userLoggedIn) return; // Ensure userID is provided
@@ -191,9 +181,9 @@ const Dashboard = () => {
           
           generateSummary(latestQuestion); // Send data to ChatGPT immediately
         }
-        } else {
+      } else {
         console.log("No document found!");
-        }
+      }
     } catch (error) {
       console.error("Error fetching latest question:", error);
     }
@@ -204,20 +194,30 @@ const Dashboard = () => {
     setLoading(true);
     try {
       const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
+      // Convert questions and answers into a formatted string for ChatGPT
       const questionAnswerText = Object.entries(questionSet)
         .map(([question, answer]) => `${question}: ${answer}`)
         .join("\n");
 
-      console.log("Question/Answer Text:", questionAnswerText);
+      console.log(questionAnswerText)
 
-      const prompt = `Here is the latest period tracking data:\n${questionAnswerText}\nBased on this data, please provide a summary and some expectations of what may come soon based on where they are likely to be in their cycle. Use 2nd person speak, words like "you" and "your"`;
+      const prompt = `
+        Here is the latest period tracking data:
+        ${questionAnswerText}
+
+        Based on this data, please provide:
+        1. A brief summary of the user's cycle phase.
+        2. A short recommendation for self-care or health tips.
+
+        respond without a numbered list and speak in the 2nd person using "you" and "your"
+      `;
 
       const response = await axios.post(
         "https://api.openai.com/v1/chat/completions",
         {
           model: "gpt-3.5-turbo",
           messages: [{ role: "user", content: prompt }],
-          max_tokens: 50,
+          max_tokens: 100,
         },
         {
           headers: {
@@ -227,19 +227,19 @@ const Dashboard = () => {
         }
       );
       
-      console.log("ChatGPT Response:", response.data);
       setChatResponse(response.data.choices[0].message.content);
     } catch (error) {
       setChatResponse("Error fetching AI summary. Please try again.");
     }
     setLoading(false);
-};
+  };
 
   return (
     <div className="flex font-primary flex-col lg:flex-row h-screen pl-90 pb-14 bg-gradient-to-tl from-cyan-300 to-red-300 ">
       {/* Main Wrapper with rounded corners */}
       <div className="flex flex-col lg:flex-row rounded-[3vw] bg-white/50 p-6 m-8 w-full h-full">
-        
+      <h1 className="text-4xl font-bold mb-4">{greeting}</h1>
+      <h1>{loading ? "Loading...": chatResponse}</h1>
         {/* Left Column: Calendar and Today's Update (Expands to Today) */}
         <div className="flex flex-col w-full lg:w-3/4 space-y-6 p-4">
           {/* Today's Update */}
@@ -269,7 +269,6 @@ const Dashboard = () => {
             <h2 className="text-[1.3vw] text-center font-bold w-full p-2 mb-2">Mini Calendar</h2>
             <Calendar />
           </div>
-        </div>
           )}
 
           {view === 'quickCheckIn' && (
@@ -320,9 +319,9 @@ const Dashboard = () => {
         <div className="flex justify-end w-full lg:w-1/3 ml-auto p-4">
           <div className="flex-1 bg-white/70 rounded-[1.5vw] p-8 w-full max-w-lg">
             <h2 className="text-[1.3vw] font-black text-center m-3">Today</h2>
-            <p className="text-2xl text-center text-gray-500">{formatDate(currentTime)}</p>
-            <p className="text-[3vw] text-center font-bold m-6">Day 1</p>
-            <p className="text-left text-xl">Current phase:</p>
+            <p className="text-2xl text-center text-gray-500">{formatTimestamp(currentTime)}</p>
+            <p className="text-[3vw] text-center font-bold m-6">Day {currentDay}</p>
+            <p className="text-left text-xl">Current phase:{phase}</p>
             <p className="text-left text-xl">Expect</p>
             <button
               onClick={handleLearnButton}
@@ -333,8 +332,6 @@ const Dashboard = () => {
             <p className="text-left text-xl pt-10">Upcoming week</p>
           </div>
         </div>
-      </div>
-
       {/* Conditional Form Display */}
       {isFormVisible && (
         <div className="absolute bottom-2/5 left-0 right-1/4 top-1/5 bg-gray-300 p-4 z-10">
