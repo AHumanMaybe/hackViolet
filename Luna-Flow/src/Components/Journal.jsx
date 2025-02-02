@@ -1,7 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore, doc, setDoc } from "firebase/firestore";
 import { useAuth } from "../Contexts/authContext";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const firebaseConfig = {
     apiKey: "AIzaSyBHZGxb3ckOGzr-Jdrfaxp4kJOJ-m6zqE0",
@@ -16,7 +16,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-function Journal() {
+function Journal({ customTimestamp }) {
     const { currentUser } = useAuth();
     const [entry, setEntry] = useState("");
 
@@ -37,7 +37,9 @@ function Journal() {
             return;
         }
 
-        const timestamp = formatTimestamp();
+        // Use custom timestamp prop if available, otherwise use the current timestamp
+        const timestamp = customTimestamp || formatTimestamp();
+        
         const entryData = {
             [timestamp]: entry
         };

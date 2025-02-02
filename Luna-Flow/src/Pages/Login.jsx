@@ -4,8 +4,13 @@ import {
   doSignInWithEmailAndPassword,
 } from "../firebase/auth";
 import { useAuth } from "../Contexts/authContext";
+import { useNavigate } from "react-router-dom"; // Import useNavigate
+
 
 function Login() {
+
+    const navigate = useNavigate(); // Initialize navigate at the top
+
 
     const { userLoggedIn, loading, currentUser } = useAuth();
 
@@ -32,44 +37,53 @@ function Login() {
     const handleLogin = async () => {
         console.log("Logging in with:", loginData);
         setErrorMessage("");
-
+    
         if (!isSigningIn) {
-        setIsSigningIn(true);
-        try {
-            const curUser = await doSignInWithEmailAndPassword(
-            loginData.email, // Changed from `username` to `email`
-            loginData.password
-            );
-            console.log("User ID:", curUser.user.uid);
-        } catch (error) {
-            console.error("Login Error:", error.message);
-            setErrorMessage(error.message);
-        } finally {
-            setIsSigningIn(false);
-        }
+            setIsSigningIn(true);
+            try {
+                const curUser = await doSignInWithEmailAndPassword(
+                    loginData.email,
+                    loginData.password
+                );
+                console.log("User ID:", curUser.user.uid);
+                navigate("/dash"); // ✅ Use navigate correctly
+            } catch (error) {
+                console.error("Login Error:", error.message);
+                setErrorMessage(error.message);
+            } finally {
+                setIsSigningIn(false);
+            }
         }
     };
-
+    
     const handleRegister = async () => {
         console.log("Registering with:", registerData);
         setErrorMessage("");
-
+    
         if (!isSigningIn && !isRegistering) {
-        setIsRegistering(true);
-        try {
-            const newUser = await doCreateUserWithEmailAndPassword(
-            registerData.email,
-            registerData.password
-            );
-            console.log("Registered User:", newUser.user);
-        } catch (error) {
-            console.error("Registration Error:", error.message);
-            setErrorMessage(error.message);
-        } finally {
-            setIsRegistering(false);
-        }
+            setIsRegistering(true);
+            try {
+                const newUser = await doCreateUserWithEmailAndPassword(
+                    registerData.email,
+                    registerData.password
+                );
+                console.log("Registered User:", newUser.user);
+    
+                const curUser = await doSignInWithEmailAndPassword(
+                    registerData.email,  // Fixed from `loginData.email`
+                    registerData.password
+                );
+                console.log("User ID:", curUser.user.uid);
+                navigate("/reg"); // ✅ Use navigate correctly
+            } catch (error) {
+                console.error("Registration Error:", error.message);
+                setErrorMessage(error.message);
+            } finally {
+                setIsRegistering(false);
+            }
         }
     };
+    
 
     return (
         <div
@@ -225,6 +239,6 @@ function Login() {
         </div>
         </div>
     );
-}
+    }
 
 export default Login;
