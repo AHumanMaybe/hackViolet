@@ -9,20 +9,20 @@ function MultCard({ question, id, options, onAnswerSelect, selectedAnswers }) {
     };
 
     return (
-        <div className="flex flex-col p-4 border rounded-lg shadow-md">
+        <div className="flex flex-col p-4 rounded-lg">
             {/* Display question */}
             <p className="text-lg font-semibold mb-2">{question}</p>
 
             {/* Render answer options */}
-            <div className="flex flex-row space-x-2 overflow-x-scroll">
+            <div className="flex flex-row space-x-2">
                 {options.map((answer, index) => (
                     <button
                         key={index}
                         onClick={() => handleSelect(answer)}
-                        className={`p-2 border rounded-md ${
+                        className={`p-2 rounded-md ${
                             selectedAnswer === answer
-                                ? "bg-blue-500 text-white"
-                                : "bg-gray-200 hover:bg-gray-300"
+                                ? "bg-indigo-400 text-white font-semibold"
+                                : "shadow-md bg-amber-300/40 hover:bg-amber-300"
                         }`}
                     >
                         {answer}

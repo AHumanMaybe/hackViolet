@@ -237,11 +237,19 @@ const Dashboard = () => {
   return (
     <div className="flex font-primary flex-col lg:flex-row h-screen pl-90 pb-14 bg-gradient-to-tl from-cyan-300 to-red-300 ">
       {/* Main Wrapper with rounded corners */}
-      <div className="flex flex-col lg:flex-row rounded-[3vw] bg-white/50 p-6 m-8 w-full h-full">
-      <h1 className="text-4xl font-bold mb-4">{greeting}</h1>
-      <h1>{loading ? "Loading...": chatResponse}</h1>
+      <div className="flex flex-col lg:flex-row rounded-[3vw] bg-white/50 p-4 m-8 w-full h-full">
+        {/* Greeting and Chat Response in a flex column, above the Log Today's Update */}
+        <div className="flex flex-col items-center lg:w-1/2 m-4 w-full">
+          <div className="flex flex-col h-full justify-between space-y-4 items-center rounded-[1.2vw]">
+            <h1 className="text-[2vw] font-bold mb-4">{greeting}</h1>
+          </div>
+          <div className="flex flex-col items-center rounded-[1.2vw] bg-white p-6">
+            <h2 className="text-xl">{loading ? "Loading..." : chatResponse}</h2>
+          </div>
+        </div>
+  
         {/* Left Column: Calendar and Today's Update (Expands to Today) */}
-        <div className="flex flex-col w-full lg:w-3/4 space-y-6 p-4">
+        <div className="flex flex-col w-full lg:w-3/4 space-y-6 p-4 items-stretch flex-1">
           {/* Today's Update */}
           <div className="flex flex-col rounded-[1.5vw] bg-white p-4">
             <h1 className="text-[1.3vw] text-center font-bold p-2 w-full">Log Today's Update?</h1>
@@ -249,98 +257,114 @@ const Dashboard = () => {
               <button
                 onClick={() => handleButtonClick('quickCheckIn')}
                 className="w-full h-[200px] rounded-[1.2vw] drop-shadow-md text-black/70 hover:text-white flex flex-col items-center justify-center text-center text-xl font-semibold
-          bg-amber-400/80 transition-transform duration-500 ease-[cubic-bezier(0.23,1,0.320,1)]
-          hover:rotate-x-6 hover:rotate-y-6 hover:scale-103"
+            bg-amber-400/80 transition-transform duration-500 ease-[cubic-bezier(0.23,1,0.320,1)]
+            hover:rotate-x-6 hover:rotate-y-6 hover:scale-103"
               >
                 Quick Check-In
               </button>
               <button
                 onClick={() => handleButtonClick('journalEntry')}
                 className="w-full h-[200px] rounded-[1.2vw] drop-shadow-md text-black/70 hover:text-white flex flex-col items-center justify-center text-center text-xl font-semibold
-          bg-indigo-400/80 transition-transform duration-500 ease-[cubic-bezier(0.23,1,0.320,1)]
-          hover:rotate-x-6 hover:rotate-y-6 hover:scale-103">
+            bg-indigo-400/80 transition-transform duration-500 ease-[cubic-bezier(0.23,1,0.320,1)]
+            hover:rotate-x-6 hover:rotate-y-6 hover:scale-103"
+              >
                 Journal Entry
               </button>
             </div>
           </div>
           {/* Conditional rendering */}
           {view === 'calendar' && (
-            <div className="flex flex-col bg-white rounded-[1.5vw] p-4">
-            <h2 className="text-[1.3vw] text-center font-bold w-full p-2 mb-2">Mini Calendar</h2>
-            <Calendar />
-          </div>
+            <div className="flex flex-col bg-white rounded-[1.5vw] p-4 h-full justify-between space-y-4">
+              <h2 className="text-[1.3vw] text-center font-bold mb-4">Mini Calendar</h2>
+                <div className="w-full flex justify-center">
+                  <Calendar />
+               </div>
+            </div>
           )}
-
+  
           {view === 'quickCheckIn' && (
-            <div className="flex flex-col bg-white rounded-xl p-4 relative">
-              {cards[currentIndex].type === "info" ? (
-                    <InfoCard
-                        key={cards[currentIndex].id}
-                        id={cards[currentIndex].id}
-                        question={cards[currentIndex].question}
-                        onAnswerChange={handleAnswerChange}
-                    />
-                ) : (
-                    <MultCard
-                        key={cards[currentIndex].id}
-                        id={cards[currentIndex].id}
-                        question={cards[currentIndex].question}
-                        options={cards[currentIndex].options}
-                        onAnswerSelect={handleAnswerChange}
-                    />
-                )}
-
-                <button onClick={handleNext}>
-                    {currentIndex === cards.length - 1 ? "Finish" : "Next"}
-                </button>
+            <div className="flex flex-col bg-white rounded-xl p-2 relative">
+            {cards[currentIndex].type === "info" ? (
+              <InfoCard
+                key={cards[currentIndex].id}
+                id={cards[currentIndex].id}
+                question={cards[currentIndex].question}
+                onAnswerChange={handleAnswerChange}
+              />
+            ) : (
+              <MultCard
+                key={cards[currentIndex].id}
+                id={cards[currentIndex].id}
+                question={cards[currentIndex].question}
+                options={cards[currentIndex].options}
+                onAnswerSelect={handleAnswerChange}
+              />
+            )}
+          
+            {/* Next Button Wrapper */}
+            <div className="flex justify-center mt-4">
+              <button
+                onClick={handleNext}
+                className="px-6 py-2 bg-indigo-500 text-white font-semibold pl-10 pr-10 rounded-full shadow-md hover:bg-indigo-600 transition"
+              >
+                {currentIndex === cards.length - 1 ? "Finish" : "Next"}
+              </button>
+            </div>
+          
+            {/* Close Button Wrapper */}
+            <div className="absolute top-4 right-4">
               <button
                 onClick={closeView}
-                className="absolute top-2 right-2 text-gray-500 hover:text-red-500"
+                className="text-gray-500 hover:text-red-500 transition"
               >
                 ✖
               </button>
             </div>
+          </div>
+          
           )}
-
+  
           {view === 'journalEntry' && (
-            <div className="flex flex-col bg-white rounded-xl p-4 relative">
+            <div className="flex bg-white rounded-xl p-4 relative">
               <button
                 onClick={closeView}
                 className="absolute top-2 right-2 text-gray-500 hover:text-red-500"
               >
                 ✖
               </button>
-              <Journal/>
+              <Journal />
             </div>
           )}
         </div>
-
+  
         {/* Right Column: Today (Always at the Right) */}
-        <div className="flex justify-end w-full lg:w-1/3 ml-auto p-4">
-          <div className="flex-1 bg-white/70 rounded-[1.5vw] p-8 w-full max-w-lg">
+        <div className="flex justify-end w-full lg:w-1/2 ml-auto p-4">
+          <div className="flex-1 bg-white rounded-[1.5vw] p-8 w-full max-w-lg">
             <h2 className="text-[1.3vw] font-black text-center m-3">Today</h2>
             <p className="text-2xl text-center text-gray-500">{formatTimestamp(currentTime)}</p>
             <p className="text-[3vw] text-center font-bold m-6">Day {currentDay}</p>
-            <p className="text-left text-xl">Current phase:{phase}</p>
-            <p className="text-left text-xl">Expect</p>
+            <p className="text-left text-2xl font-semibold">Current phase:</p>
+            <p className="text-left text-xl">{phase}</p>
+            <p className="text-left text-2xl font-semibold pt-6">Expect: </p>
+            <p className="text-left text-lg"></p>
             <button
               onClick={handleLearnButton}
               className="text-sm drop-shadow-md bg-indigo-500 m-6 text-white py-2 px-6 rounded-full hover:outline cursor-pointer block mx-auto"
             >
               Learn More
             </button>
-            <p className="text-left text-xl pt-10">Upcoming week</p>
           </div>
         </div>
-      {/* Conditional Form Display */}
-      {isFormVisible && (
-        <div className="absolute bottom-2/5 left-0 right-1/4 top-1/5 bg-gray-300 p-4 z-10">
-          <UpdateForm onFormComplete={toggleForm} />
-        </div>
-      )}
+  
+        {/* Conditional Form Display */}
+        {isFormVisible && (
+          <div className="absolute bottom-2/5 left-0 right-1/4 top-1/5 bg-gray-300 p-4 z-10">
+            <UpdateForm onFormComplete={toggleForm} />
+          </div>
+        )}
+      </div>
     </div>
-  </div>
-  );
+  );  
 };
 
 export default Dashboard;

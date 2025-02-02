@@ -75,40 +75,56 @@ function Register() {
     };
 
     return (
-        <div className="flex pl-64">
-            {currentIndex < cards.length ? (
-                <>
-                    {cards[currentIndex].type === "info" ? (
-                        <InfoCard
-                            key={cards[currentIndex].id}
-                            id={cards[currentIndex].id}
-                            question={cards[currentIndex].question}
-                            onAnswerChange={handleAnswerChange}
-                        />
+        <div className="flex font-primary flex-col lg:flex-row h-screen pl-90 pb-14 bg-gradient-to-tl from-cyan-300 to-red-300">
+            {/* Main Wrapper with rounded corners */}
+            <div className="flex flex-col w-full h-full rounded-[3vw] bg-white/50 p-4 m-8">
+                
+                {/* "Let's Get Started" Section */}
+                <div className="flex justify-center w-full mb-6">
+                    <h1 className="text-[3vw] pt-10 pb-10 font-light text-center">Let's Get You Set Up</h1>
+                </div>
+    
+                {/* Cards Wrapper: Centered horizontally in a white background */}
+                <div className="flex flex-col items-center w-full bg-white p-8 rounded-[1.5vw] shadow-lg space-y-6">
+                    {currentIndex < cards.length ? (
+                        <>
+                            <div className="flex justify-center w-full p-8 space-y-6 transform scale-150">
+                                {cards[currentIndex].type === "info" ? (
+                                    <InfoCard
+                                    key={cards[currentIndex].id}
+                                    id={cards[currentIndex].id}
+                                    question={cards[currentIndex].question}
+                                    onAnswerChange={handleAnswerChange}
+                                    />
+                                ) : (
+                                    <MultCard
+                                    key={cards[currentIndex].id}
+                                    id={cards[currentIndex].id}
+                                    question={cards[currentIndex].question}
+                                    options={cards[currentIndex].options}
+                                    onAnswerSelect={handleAnswerChange}
+                                    />
+                                )}
+                                </div>
+    
+                            <button onClick={handleNext} className="mt-4 p-2 pl-10 pr-10 bg-indigo-500 text-white rounded-full">
+                                {currentIndex === cards.length - 1 ? "Finish" : "Next"}
+                            </button>
+                        </>
                     ) : (
-                        <MultCard
-                            key={cards[currentIndex].id}
-                            id={cards[currentIndex].id}
-                            question={cards[currentIndex].question}
-                            options={cards[currentIndex].options}
-                            onAnswerSelect={handleAnswerChange}
-                        />
+                        <div>No more questions!</div>
                     )}
-
-                    <button onClick={handleNext}>
-                        {currentIndex === cards.length - 1 ? "Finish" : "Next"}
-                    </button>
-                </>
-            ) : (
-                <div>No more questions!</div>
-            )}
-
-            <div className="mt-6 p-4 border rounded-md">
-                <h2 className="text-lg font-semibold">Collected Answers</h2>
-                <pre>{JSON.stringify(answers, null, 2)}</pre>
+                </div>
+    
+                {/* Collected Answers Section */}
+                <div className="mt-6 p-4 border rounded-md">
+                    <h2 className="text-lg font-semibold">Collected Answers</h2>
+                    <pre>{JSON.stringify(answers, null, 2)}</pre>
+                </div>
             </div>
         </div>
-    );
+    );    
+    
 }
 
 export default Register;
