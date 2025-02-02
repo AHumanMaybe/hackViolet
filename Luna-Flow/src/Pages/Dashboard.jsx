@@ -241,7 +241,7 @@ const Dashboard = () => {
         {/* Greeting and Chat Response in a flex column, above the Log Today's Update */}
         <div className="flex flex-col items-center lg:w-1/2 m-4 w-full" >
           <div className="flex flex-col h-full justify-between space-y-4 items-center rounded-[1.2vw]">
-            <h1 className="text-[2vw] font-bold mb-4">{greeting}</h1>
+            <h1 className="text-[2vw] font-bold mt-25 mb-4 text-transparent bg-clip-text font-extrabold bg-gradient-to-tr from-rose-800/80 to-blue-800/80">{greeting}</h1>
           </div>
           <div className="flex flex-col items-center rounded-[1.2vw] bg-white p-6">
             <h2 className="text-xl">{loading ? "Loading..." : chatResponse}</h2>
@@ -252,7 +252,7 @@ const Dashboard = () => {
         <div className="flex flex-col w-full lg:w-3/4 space-y-6 p-4 items-stretch flex-1">
           {/* Today's Update */}
           <div className="flex flex-col rounded-[1.5vw] bg-white p-4">
-            <h1 className="text-[1.3vw] text-center font-bold p-2 w-full">Log Today's Update?</h1>
+            <h1 className="text-[1.3vw] text-center font-bold p-2 pb-4 w-full">Log Today's Update?</h1>
             <div className="flex space-x-4">
               <button
                 onClick={() => handleButtonClick('quickCheckIn')}
