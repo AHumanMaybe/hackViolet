@@ -2,6 +2,7 @@ import { initializeApp } from "firebase/app";
 import { getFirestore, doc, setDoc } from "firebase/firestore"; 
 import { useAuth } from "../Contexts/authContext";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom"; // Import useNavigate
 import InfoCard from "../Components/InfoCard";
 import MultCard from "../Components/MultCard";
 
@@ -22,18 +23,22 @@ function Register() {
     const { currentUser } = useAuth();
     const [answers, setAnswers] = useState({});
     const [currentIndex, setCurrentIndex] = useState(0);
+    const navigate = useNavigate(); // Initialize navigate
 
-    // Unified card structure
     const cards = [
-        { id: 1, type: "info", question: "What is your name?" },
-        { id: 2, type: "info", question: "What is your favorite color?" },
-        { id: 3, type: "multi", question: "What is the capital of France?", options: ["Paris", "Berlin", "Madrid"] },
-        { id: 4, type: "multi", question: "Which planet is known as the Red Planet?", options: ["Mars", "Venus", "Jupiter"] },
-        { id: 5, type: "info", question: "Where do you live?" },
-        { id: 6, type: "multi", question: "What is 2 + 2?", options: ["3", "4", "5"] }
-    ];
+        { id: 1, type: "multi", question: "Period today?", options: ["Spotting", "Light", "Medium", "Heavy", "Super Heavy", "Skip"] },
+        { id: 2, type: "multi", question: "How are you feeling?", options: ["Fine", "Happy", "Sad", "Angry/Irritable", "Indifferent", "Grateful", "Skip"] },
+        { id: 3, type: "multi", question: "Was there any pain?", options: ["Cramping", "Headache", "Breast Tenderness", "Ovulation", "Lower Back", "Skip"] },
+        { id: 4, type: "multi", question: "Sex life?", options: ["Protected", "Unprotected", "Withdrawal", "High Sex Drive", "Low Sex Drive", "Skip"] },
+        { id: 5, type: "multi", question: "Did you have any energy today?", options: ["Productive", "Exhausted", "Energized", "Tired", "Brain Fog", "Skip"] },
+        { id: 6, type: "multi", question: "How was your mindset?", options: ["Motivated", "Unmotivated", "Brain Fog", "Stressed"] },
+        { id: 7, type: "multi", question: "Cravings", options: ["Sweet", "Spicy", "Salty", "Greasy", "Carbs", "Skip"] },
+        { id: 8, type: "info", question: "Take any medication today?" },
+        { id: 9, type: "info", question: "Did you exercise today?" },
+        { id: 10, type: "multi", question: "How much sleep did you get last night?", options: ["0 hr", "1-3 hr", "3-6 hr", "6-9 hr", "9+ hr"] },
+        { id: 11, type: "info", question: "Weight" }
+      ];
 
-    // Save answers with question text as keys
     const handleAnswerChange = (id, value) => {
         const questionText = cards.find(card => card.id === id).question;
         setAnswers((prev) => ({ ...prev, [questionText]: value }));
@@ -41,24 +46,16 @@ function Register() {
 
     const formatTimestamp = () => {
         const date = new Date();
-        const year = date.getFullYear();
-        const month = (date.getMonth() + 1).toString().padStart(2, "0");
-        const day = date.getDate().toString().padStart(2, "0");
-        const hours = date.getHours().toString().padStart(2, "0");
-        const minutes = date.getMinutes().toString().padStart(2, "0");
-        const seconds = date.getSeconds().toString().padStart(2, "0");
-        return `${year}-${month}-${day}_${hours}-${minutes}-${seconds}`;
+        return date.toISOString().replace(/[:.]/g, "-"); // Standardized timestamp
     };
 
-    // Handle next button
     const handleNext = async () => {
         if (currentIndex < cards.length - 1) {
             setCurrentIndex((prev) => prev + 1);
         } else {
             console.log("Final Answers:", answers);
             try {
-                
-                const timestamp = formatTimestamp()
+                const timestamp = formatTimestamp();
 
                 await setDoc(doc(db, currentUser.uid, "cycleInfo"), {
                     cycleStartDate: new Date(),
@@ -68,7 +65,9 @@ function Register() {
                 await setDoc(doc(db, currentUser.uid, "registerQuestions"), {
                     [timestamp]: answers
                 }, { merge: true });
+
                 console.log("Data successfully sent to Firebase!");
+                navigate("/dash"); // Navigate to Dashboard
             } catch (error) {
                 console.error("Error writing to Firestore:", error);
             }
@@ -104,7 +103,6 @@ function Register() {
                 <div>No more questions!</div>
             )}
 
-            {/* Display all answers */}
             <div className="mt-6 p-4 border rounded-md">
                 <h2 className="text-lg font-semibold">Collected Answers</h2>
                 <pre>{JSON.stringify(answers, null, 2)}</pre>

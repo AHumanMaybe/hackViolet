@@ -11,7 +11,7 @@ function InfoCard({ question, id, onAnswerChange }){
     }
 
     return(
-        <div className="flex">
+        <div className="flex flex-col">
             <div>{question}</div>
             <input value={answer} onChange={handleChange}></input>
         </div>

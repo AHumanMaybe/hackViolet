@@ -9,12 +9,12 @@ function MultCard({ question, id, options, onAnswerSelect, selectedAnswers }) {
     };
 
     return (
-        <div className="flex p-4 border rounded-lg shadow-md">
+        <div className="flex flex-col p-4 border rounded-lg shadow-md">
             {/* Display question */}
             <p className="text-lg font-semibold mb-2">{question}</p>
 
             {/* Render answer options */}
-            <div className="flex flex-col space-y-2">
+            <div className="flex flex-row space-x-2 overflow-x-scroll">
                 {options.map((answer, index) => (
                     <button
                         key={index}

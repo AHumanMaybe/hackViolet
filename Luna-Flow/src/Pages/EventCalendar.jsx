@@ -1,11 +1,83 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import Journal from '../Components/Journal';
+import { initializeApp } from "firebase/app";
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
+import { doc, getDoc, setDoc, getFirestore } from 'firebase/firestore'; // Firebase Firestore methods
+import { useAuth } from '../Contexts/authContext';
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBHZGxb3ckOGzr-Jdrfaxp4kJOJ-m6zqE0",
+  authDomain: "hack-violet-32ab4.firebaseapp.com",
+  projectId: "hack-violet-32ab4",
+  storageBucket: "hack-violet-32ab4.firebasestorage.app",
+  messagingSenderId: "33323039241",
+  appId: "1:33323039241:web:dcb75895819c3d365856d8",
+  measurementId: "G-PLM4DXTTLW"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
 const EventCalendar = () => {
+  const { currentUser, userLoggedIn } = useAuth();
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [events, setEvents] = useState([]);
   const [newEvent, setNewEvent] = useState('');
+
+  const formatDate = (date) => {
+    const year = date.getFullYear().toString(); // Get the full year
+    const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Month is 0-indexed
+    const day = date.getDate().toString().padStart(2, '0'); // Ensure 2 digits for day
+    const hours = date.getHours().toString().padStart(2, '0'); // Ensure 2 digits for hours
+    const minutes = date.getMinutes().toString().padStart(2, '0'); // Ensure 2 digits for minutes
+    const seconds = date.getSeconds().toString().padStart(2, '0'); // Ensure 2 digits for seconds
+
+    return `${year}-${month}-${day}_${hours}-${minutes}-${seconds}`;
+  };
+
+  // Fetch journal data from a specific document
+  const fetchJournalEntries = async () => {
+    if (!userLoggedIn || !currentUser?.uid) return; // Ensure userID is provided
+    
+    const journalDocRef = doc(db, currentUser.uid, "journalEntries");
+
+    try {
+      const docSnap = await getDoc(journalDocRef);
+
+      if (docSnap.exists()) {
+        const journalData = docSnap.data();
+        console.log("Fetched journal data: ", journalData);
+
+        const formattedSelectedDate = formatDate(selectedDate); // Format the selected date
+
+        console.log(formattedSelectedDate)
+
+        // Iterate through the journal data and check if the timestamp matches the selected date
+        const filteredEntries = Object.entries(journalData).filter(([timestamp, event]) => {
+          // Check if the event has a valid timestamp
+          if (timestamp) {
+            const eventDate = timestamp.substring(0, timestamp.indexOf("_")); // Extract date portion
+            console.log(eventDate)
+            return eventDate === formattedSelectedDate.substring(0, formattedSelectedDate.indexOf("_")); // Compare the selected date with the timestamp
+          }
+          return false; // If no valid timestamp, skip this event
+        });
+
+        // Only set the values (journal entries) from the filtered entries
+        setEvents(filteredEntries.map(([_, event]) => event)); // Extract the event titles
+      } else {
+        console.log("No journal document found.");
+      }
+    } catch (error) {
+      console.error("Error fetching journal entries:", error);
+    }
+  };
+
+  // Fetch journal entries when the selected date or currentUser changes
+  useEffect(() => {
+    fetchJournalEntries(); // Fetch journal entries for the selected date
+  }, [selectedDate, currentUser]); // Trigger whenever selectedDate or currentUser changes
 
   const handleDateChange = (date) => {
     setSelectedDate(date);
@@ -15,9 +87,20 @@ const EventCalendar = () => {
     setNewEvent(e.target.value);
   };
 
-  const addEvent = () => {
+  const addEvent = async () => {
     if (newEvent.trim() === '') return;
-    setEvents([...events, { date: selectedDate.toDateString(), title: newEvent }]);
+
+    const eventData = {
+      title: newEvent,
+      timestamp: new Date(), // Add a timestamp for ordering
+    };
+
+    // Assuming journal entries are stored in a specific document under the current user
+    const journalDocRef = doc(db, currentUser.uid, "journalEntries"); // Replace with your actual document ID
+    await setDoc(journalDocRef, {
+      [`${new Date().getTime()}`]: eventData // Save the event under a dynamic field name (event timestamp)
+    }, { merge: true });
+
     setNewEvent('');
   };
 
@@ -28,21 +111,14 @@ const EventCalendar = () => {
           <h1 className="text-3xl font-bold mb-6">Cycle Calendar</h1>
           <h2 className="text-xl font-semibold mb-4">Select a Date</h2>
           <Calendar onChange={handleDateChange} value={selectedDate} className="mb-4" />
-          <input 
-            type="text" 
-            value={newEvent} 
-            onChange={handleEventChange} 
-            placeholder="Add an event" 
-            className="border p-2 w-full rounded mb-2" 
-          />
-          <button onClick={addEvent} className="bg-[#FFFFFFB3] text-black p-2 w-full rounded">Add Event</button>
+          <Journal customTimestamp={formatDate(selectedDate)} />
         </div>
         <div className="bg-gray-100 p-6 rounded-lg shadow-md w-[300px]">
-          <h3 className="text-lg font-semibold">Logged journal on {selectedDate.toDateString()}:</h3>
+          <h3 className="text-lg font-semibold">Logged journal on {formatDate(selectedDate).substring(0, formatDate(selectedDate).indexOf("_"))}:</h3>
           <ul>
-            {events.filter(event => event.date === selectedDate.toDateString()).length > 0 ? (
-              events.filter(event => event.date === selectedDate.toDateString()).map((event, index) => (
-                <li key={index} className="border-b p-2 last:border-b-0">{event.title}</li>
+            {events.length > 0 ? (
+              events.map((event, index) => (
+                <li key={index} className="border-b p-2 last:border-b-0">{event}</li> // Show event title
               ))
             ) : (
               <p className="text-gray-500">No entries for this date.</p>
