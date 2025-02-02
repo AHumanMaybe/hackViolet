@@ -6,6 +6,7 @@ import "react-calendar/dist/Calendar.css";
 import axios from "axios";
 import { doc, getDoc, getFirestore } from "firebase/firestore";
 import { useAuth } from "../Contexts/authContext";
+import { format } from 'date-fns';
 
 const firebaseConfig = {
     apiKey: "AIzaSyBHZGxb3ckOGzr-Jdrfaxp4kJOJ-m6zqE0",
@@ -23,12 +24,16 @@ const db = getFirestore(app);
 const Dashboard = () => {
 
   const { currentUser, userLoggedIn } = useAuth();
-
+  const [isFormVisible, setFormVisible] = useState(false);
   const [currentTime, setCurrentTime] = useState(new Date());
   const [greeting, setGreeting] = useState("");
   const [chatResponse, setChatResponse] = useState("");
   const [loading, setLoading] = useState(false);
   const [latestQuestion, setLatestQuestion] = useState(null);
+
+  const formatDate = (date) => {
+    return format(date, 'MM/dd/yyyy');
+  };
 
   const greetings = [
     `Good morning, ${name}! Ready to take on the day?`,
@@ -92,7 +97,7 @@ const Dashboard = () => {
   const generateSummary = async (questionSet) => {
     setLoading(true);
     try {
-      const apiKey = //ADD HERE
+      const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
 
       // Convert questions and answers into a formatted string for ChatGPT
       const questionAnswerText = Object.entries(questionSet)
@@ -157,12 +162,6 @@ const Dashboard = () => {
         <p className="text-2xl">Day 1</p>
         <p>Current phase:</p>
         <p>Expect</p>
-        <button
-          onClick={handleLearnButton}
-          className="bg-green-500 text-white py-3 px-6 rounded-lg hover:bg-green-700 cursor-pointer"
-        >
-          Learn More
-        </button>
         <p>Upcoming week</p>
       </div>
       {!isFormVisible && (
