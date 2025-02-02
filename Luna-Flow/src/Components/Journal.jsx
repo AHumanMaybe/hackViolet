@@ -54,7 +54,7 @@ function Journal({ customTimestamp }) {
     };
 
     return (
-        <div className="w-full">
+        <div className="flex flex-col w-96">
             {/* Input field */}
             <textarea
                 className="w-full p-2 mt-4 border rounded"

@@ -101,16 +101,16 @@ const Dashboard = () => {
   };
 
   const greetings = [
-      `Good morning, ${currentUser ? currentUser.email : 'there'}! Ready to take on the day?`,
-      `Hey ${currentUser ? currentUser.email : 'there'}, how’s your day going so far?`,
-      `Hello, ${currentUser ? currentUser.email : 'there'}! How’s everything feeling today?`,
-      `Morning, ${currentUser ? currentUser.email : 'there'}! How are you today?`,
-      `Hi there, ${currentUser ? currentUser.email : 'there'}! How’s your mood today?`,
-      `How’s it going, ${currentUser ? currentUser.email : 'there'}? Feeling good today?`,
-      `${currentUser ? currentUser.email : 'there'}, how are you holding up today?`,
-      `Hey ${currentUser ? currentUser.email : 'there'}, keeping busy today?`,
-      `Rise and shine, ${currentUser ? currentUser.email : 'there'}! How are you doing?`,
-      `What’s up, ${currentUser ? currentUser.email : 'there'}? How are you feeling today?`
+      `Good morning, ${currentUser ? currentUser.email.substring(0, currentUser.email.indexOf("@")) : 'there'}! Ready to take on the day?`,
+      `Hey ${currentUser ? currentUser.email.substring(0, currentUser.email.indexOf("@")) : 'there'}, how’s your day going so far?`,
+      `Hello, ${currentUser ? currentUser.email.substring(0, currentUser.email.indexOf("@")) : 'there'}! How’s everything feeling today?`,
+      `Morning, ${currentUser ? currentUser.email.substring(0, currentUser.email.indexOf("@")) : 'there'}! How are you today?`,
+      `Hi there, ${currentUser ? currentUser.email.substring(0, currentUser.email.indexOf("@")) : 'there'}! How’s your mood today?`,
+      `How’s it going, ${currentUser ? currentUser.email.substring(0, currentUser.email.indexOf("@")) : 'there'}? Feeling good today?`,
+      `${currentUser ? currentUser.email.substring(0, currentUser.email.indexOf("@")) : 'there'}, how are you holding up today?`,
+      `Hey ${currentUser ? currentUser.email.substring(0, currentUser.email.indexOf("@")) : 'there'}, keeping busy today?`,
+      `Rise and shine, ${currentUser ? currentUser.email.substring(0, currentUser.email.indexOf("@")) : 'there'}! How are you doing?`,
+      `What’s up, ${currentUser ? currentUser.email.substring(0, currentUser.email.indexOf("@")) : 'there'}? How are you feeling today?`
   ];
 
   useEffect(() => {
@@ -235,11 +235,11 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="flex font-primary flex-col lg:flex-row h-screen pl-90 pb-14 bg-gradient-to-tl from-cyan-300 to-red-300 ">
+    <div className="flex font-primary flex-col lg:flex-row h-screen pl-85 pb-14 bg-gradient-to-tl from-cyan-300 to-red-300 ">
       {/* Main Wrapper with rounded corners */}
-      <div className="flex flex-col lg:flex-row rounded-[3vw] bg-white/50 p-4 m-8 w-full h-full">
+      <div className="flex flex-col lg:flex-row rounded-[3vw] bg-white/50 p-4 m-8 w-full h-full overflow-y-auto">
         {/* Greeting and Chat Response in a flex column, above the Log Today's Update */}
-        <div className="flex flex-col items-center lg:w-1/2 m-4 w-full">
+        <div className="flex flex-col items-center lg:w-1/2 m-4 w-full" >
           <div className="flex flex-col h-full justify-between space-y-4 items-center rounded-[1.2vw]">
             <h1 className="text-[2vw] font-bold mb-4">{greeting}</h1>
           </div>
@@ -339,13 +339,12 @@ const Dashboard = () => {
   
         {/* Right Column: Today (Always at the Right) */}
         <div className="flex justify-end w-full lg:w-1/2 ml-auto p-4">
-          <div className="flex-1 bg-white rounded-[1.5vw] p-8 w-full max-w-lg">
+          <div className="flex-1 bg-white rounded-[1.5vw] p-8 w-full max-w-lg overflow-y-auto">
             <h2 className="text-[1.3vw] font-black text-center m-3">Today</h2>
-            <p className="text-2xl text-center text-gray-500">{formatTimestamp(currentTime)}</p>
+            <p className="text-2xl text-center text-gray-500">{formatTimestamp(currentTime).substring(0, formatTimestamp(currentTime).indexOf("_"))}</p>
             <p className="text-[3vw] text-center font-bold m-6">Day {currentDay}</p>
             <p className="text-left text-2xl font-semibold">Current phase:</p>
             <p className="text-left text-xl">{phase}</p>
-            <p className="text-left text-2xl font-semibold pt-6">Expect: </p>
             <p className="text-left text-lg"></p>
             <button
               onClick={handleLearnButton}
