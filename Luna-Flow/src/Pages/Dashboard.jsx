@@ -59,9 +59,9 @@ const Dashboard = () => {
 
   const handleLearnButton = () => {
     const phaseUrls = {
-      "Menstrual Phase": "https://flo.health/menstrual-cycle/phases/menstrual-phase",
+      "Period": "https://www.betterhealth.vic.gov.au/health/conditionsandtreatments/menstrual-cycle",
       "Follicular Phase": "https://www.healthline.com/health/womens-health/follicular-phase",
-      "Ovulation Phase": "https://www.mayoclinic.org/tests-procedures/ovulation-prediction-kits/about/pac-20393607",
+      "Ovulation": "https://www.mayoclinic.org/tests-procedures/ovulation-prediction-kits/about/pac-20393607",
       "Luteal Phase": "https://www.verywellhealth.com/luteal-phase-2619135",
     };
   

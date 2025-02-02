@@ -85,10 +85,10 @@ function Register() {
                 </div>
     
                 {/* Cards Wrapper: Centered horizontally in a white background */}
-                <div className="flex flex-col items-center w-full bg-white p-8 rounded-[1.5vw] shadow-lg space-y-6">
+                <div className="flex flex-col items-center w-full bg-white p-10 rounded-[1.5vw] shadow-lg space-y-6">
                     {currentIndex < cards.length ? (
                         <>
-                            <div className="flex justify-center w-full p-8 space-y-6 transform scale-150">
+                            <div className="flex justify-center w-full p-20 space-y-6 transform scale-150">
                                 {cards[currentIndex].type === "info" ? (
                                     <InfoCard
                                     key={cards[currentIndex].id}

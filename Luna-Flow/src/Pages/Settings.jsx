@@ -2,12 +2,12 @@ import React, { useState } from 'react';
 
 const Settings = () => {
   const [age, setAge] = useState('');
-  const [race, setRace] = useState('');
+  const [name, setName] = useState('');
   const [height, setHeight] = useState('');
   const [weight, setWeight] = useState('');
 
   const handleSave = () => {
-    console.log({ age, race, height, weight });
+    console.log({ age, name, height, weight });
     alert('Settings saved!');
   };
 
@@ -24,11 +24,11 @@ const Settings = () => {
           onChange={(e) => setAge(e.target.value)} 
           className="border border-indigo-400 p-2 w-full rounded mb-4" 
         />
-        <label className="block mb-2">Race</label>
+        <label className="block mb-2">Name</label>
         <input 
           type="text" 
-          value={race} 
-          onChange={(e) => setRace(e.target.value)} 
+          value={name} 
+          onChange={(e) => setName(e.target.value)} 
           className="border border-indigo-400 p-2 w-full rounded mb-4" 
         />
         <label className="block mb-2">Height (in cm)</label>
