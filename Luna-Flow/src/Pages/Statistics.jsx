@@ -1,78 +1,69 @@
 import React, { useState, useEffect } from 'react';
 
 const Statistics = () => {
-  // State to hold data for statistics, for example cycle data, mood, etc.
   const [cycleData, setCycleData] = useState([]);
   const [moodData, setMoodData] = useState([]);
   const [cravingsData, setCravingsData] = useState([]);
 
-  // Mock function to simulate fetching or updating data.
   const fetchData = () => {
-    // Here, we could fetch data from an API or local storage.
     setCycleData([
       { date: '2024-01-01', phase: 'Follicular', mood: 'Energetic' },
       { date: '2024-01-15', phase: 'Ovulation', mood: 'Happy' },
       { date: '2024-02-01', phase: 'Luteal', mood: 'Tired' }
     ]);
-    setMoodData([5, 4, 3, 2, 1]); // Example scale data: 1-5 mood tracking
+    setMoodData([5, 4, 3, 2, 1]);
     setCravingsData(['Chocolate', 'Salty snacks', 'Fruit']);
   };
 
   useEffect(() => {
-    fetchData(); // Call the mock data fetch on component mount
+    fetchData();
   }, []);
 
   return (
-    <div className="statistics-container p-6">
-      <h1 className="text-3xl font-bold mb-4">Statistics</h1>
-
-      {/* Display cycle data */}
-      <div className="cycle-data mb-8">
-        <h2 className="text-2xl font-semibold">Cycle Data</h2>
-        <table className="table-auto border-collapse border border-gray-300 mt-4">
-          <thead>
-            <tr>
-              <th className="border border-gray-300 p-2">Date</th>
-              <th className="border border-gray-300 p-2">Phase</th>
-              <th className="border border-gray-300 p-2">Mood</th>
-            </tr>
-          </thead>
-          <tbody>
-            {cycleData.map((item, index) => (
-              <tr key={index}>
-                <td className="border border-gray-300 p-2">{item.date}</td>
-                <td className="border border-gray-300 p-2">{item.phase}</td>
-                <td className="border border-gray-300 p-2">{item.mood}</td>
+    <div className="min-h-screen flex items-center justify-center p-6 bg-gradient-to-t from-[#A5B4FC] to-[#BAE6FD]">
+      <div className="flex flex-row space-x-6">
+        {/* Cycle Data */}
+        <div className="bg-gray-200 p-6 rounded-lg shadow-md w-[450px]">
+          <h1 className="text-3xl font-bold mb-4">Cycle Statistics</h1>
+          <h2 className="text-xl font-semibold mb-3">Cycle Data</h2>
+          <table className="w-full border-collapse border border-gray-300">
+            <thead>
+              <tr className="bg-gray-300">
+                <th className="border border-gray-400 p-2">Date</th>
+                <th className="border border-gray-400 p-2">Phase</th>
+                <th className="border border-gray-400 p-2">Mood</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+            </thead>
+            <tbody>
+              {cycleData.map((item, index) => (
+                <tr key={index} className="odd:bg-white even:bg-gray-100">
+                  <td className="border border-gray-300 p-2">{item.date}</td>
+                  <td className="border border-gray-300 p-2">{item.phase}</td>
+                  <td className="border border-gray-300 p-2">{item.mood}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
 
-      {/* Display mood data */}
-      <div className="mood-data mb-8">
-        <h2 className="text-2xl font-semibold">Mood Tracker</h2>
-        <div className="mood-scale">
-          <ul>
+        {/* Mood and Cravings Data */}
+        <div className="bg-gray-100 p-6 rounded-lg shadow-md w-[300px]">
+          <h2 className="text-xl font-semibold mb-3">Mood Tracker</h2>
+          <ul className="mb-4">
             {moodData.map((mood, index) => (
-              <li key={index}>Day {index + 1}: Mood Level {mood}</li>
+              <li key={index} className="p-2 border-b last:border-b-0">Day {index + 1}: Mood Level {mood}</li>
+            ))}
+          </ul>
+          <h2 className="text-xl font-semibold mb-3">Cravings</h2>
+          <ul>
+            {cravingsData.map((craving, index) => (
+              <li key={index} className="p-2 border-b last:border-b-0">{craving}</li>
             ))}
           </ul>
         </div>
-      </div>
-
-      {/* Display cravings data */}
-      <div className="cravings-data">
-        <h2 className="text-2xl font-semibold">Cravings</h2>
-        <ul>
-          {cravingsData.map((craving, index) => (
-            <li key={index}>{craving}</li>
-          ))}
-        </ul>
       </div>
     </div>
   );
 };
 
 export default Statistics;
-
