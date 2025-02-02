@@ -60,6 +60,11 @@ function Register() {
                 
                 const timestamp = formatTimestamp()
 
+                await setDoc(doc(db, currentUser.uid, "cycleInfo"), {
+                    cycleStartDate: new Date(),
+                    currentDay: 1
+                })
+
                 await setDoc(doc(db, currentUser.uid, "registerQuestions"), {
                     [timestamp]: answers
                 }, { merge: true });

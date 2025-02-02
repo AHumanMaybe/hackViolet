@@ -22,72 +22,110 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 const Dashboard = () => {
-
-  const { currentUser, userLoggedIn } = useAuth();
-  const [isFormVisible, setFormVisible] = useState(false);
-import { useAuth } from '../Contexts/authContext';
-
-const Dashboard = () => {
-  const [currentTime, setCurrentTime] = useState(new Date());
-  const [greeting, setGreeting] = useState("");
-  const [chatResponse, setChatResponse] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [latestQuestion, setLatestQuestion] = useState(null);
-
-  const formatDate = (date) => {
-    return format(date, 'MM/dd/yyyy');
-  };
-
-  const greetings = [
-    `Good morning, ${name}! Ready to take on the day?`,
-    `Hey ${name}, how’s your day going so far?`,
-    `Hello, ${name}! How’s everything feeling today?`,
-    `Morning, ${name}! How are you today?`,
-    `Hi there, ${name}! How’s your mood today?`,
-    `How’s it going, ${name}? Feeling good today?`,
-    `${name}, how are you holding up today?`,
-    `Hey ${name}, keeping busy today?`,
-    `Rise and shine, ${name}! How are you doing?`,
-    `What’s up, ${name}? How are you feeling today?`,
-    `Good morning, [name]! Ready to take on the day?`,
-    `Hey [name], how’s your day going so far?`,
-    `Hello, [name]! How’s everything feeling today?`,
-    `Morning, [name]! How are you today?`,
-    `Hi there, [name]! How’s your mood today?`,
-    `How’s it going, [name]? Feeling good today?`,
-    `[name], how are you holding up today?`,
-    `Hey [name], keeping busy today?`,
-    `Rise and shine, [name]! How are you doing?`,
-    `What’s up, [name]? How are you feeling today?`
-  ];
-  const [greeting, setGreeting] = useState('');
-  const [isFormVisible, setFormVisible] = useState(false);
-  const {currentUser, userLoggedIn} = useAuth();
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentTime(new Date());
-    }, 1000);
-
-    setGreeting(greetings[Math.floor(Math.random() * greetings.length)]);
-
-    fetchLatestQuestion(); // Fetch latest questions and trigger AI summary
-
+    const [currentTime, setCurrentTime] = useState(new Date());
+    const [currentDay, setCurrentDay] = useState(1);
+    const [phase, setPhase] = useState('');
+    const [chatResponse, setChatResponse] = useState("");
+    const [loading, setLoading] = useState(false);
+    const [latestQuestion, setLatestQuestion] = useState(null);
     
-    if (currentUser && currentUser.email){ 
-        console.log(currentUser.email);
-        setGreeting(greetings[Math.floor(Math.random() * greetings.length)].replace('[name]', currentUser.email));
-    }
-    else {
-        setGreeting("Helllllloo!!");
-    }
-    return () => clearInterval(timer);
-  }, []);
+
+    const formatDate = (date) => {
+        return format(date, 'MM/dd/yyyy');
+    };
+
+    const greetings = [
+        `Good morning, ${name}! Ready to take on the day?`,
+        `Hey ${name}, how’s your day going so far?`,
+        `Hello, ${name}! How’s everything feeling today?`,
+        `Morning, ${name}! How are you today?`,
+        `Hi there, ${name}! How’s your mood today?`,
+        `How’s it going, ${name}? Feeling good today?`,
+        `${name}, how are you holding up today?`,
+        `Hey ${name}, keeping busy today?`,
+        `Rise and shine, ${name}! How are you doing?`,
+        `What’s up, ${name}? How are you feeling today?`,
+        `Good morning, [name]! Ready to take on the day?`,
+        `Hey [name], how’s your day going so far?`,
+        `Hello, [name]! How’s everything feeling today?`,
+        `Morning, [name]! How are you today?`,
+        `Hi there, [name]! How’s your mood today?`,
+        `How’s it going, [name]? Feeling good today?`,
+        `[name], how are you holding up today?`,
+        `Hey [name], keeping busy today?`,
+        `Rise and shine, [name]! How are you doing?`,
+        `What’s up, [name]? How are you feeling today?`
+    ];
+    const [greeting, setGreeting] = useState('');
+    const [isFormVisible, setFormVisible] = useState(false);
+    const {currentUser, userLoggedIn} = useAuth();
+
+    useEffect(() => {
+        const timer = setInterval(() => {
+            setCurrentTime(new Date());
+        }, 1000);
+
+        const fetchAndLogCycleStartDate = async () => {
+            const startDate = await fetchCycleInfo();
+            const today = new Date();
+            const diffTime =  Math.abs(today - startDate);
+            const dayOfCycle = (Math.floor(diffTime / (1000 * 60 * 60 * 24)) % 28) + 1;
+            setCurrentDay(dayOfCycle);
+
+            if (dayOfCycle >= 1 && dayOfCycle <= 5) {
+                setPhase('Period');
+            } else if (dayOfCycle >= 6 && dayOfCycle <= 13) {
+                setPhase('Follicular Phase');
+            } else if (dayOfCycle === 14) {
+                setPhase('Ovulation');
+            } else if (dayOfCycle >= 15 && dayOfCycle <= 28) {
+                setPhase('Luteal Phase');
+            }
+            else{
+                console.log("Failed");
+            }
+
+            console.log({dayOfCycle});
+            console.log({phase});
+        }
+
+        fetchAndLogCycleStartDate();
+
+        fetchLatestQuestion(); // Fetch latest questions and trigger AI summary
+        
+        if (currentUser && currentUser.email){ 
+            console.log(currentUser.email);
+            setGreeting(greetings[Math.floor(Math.random() * greetings.length)].replace('[name]', currentUser.email));
+        }
+        else {
+            setGreeting("Helllllloo!!");
+        }
+        return () => clearInterval(timer);
+    }, []);
 
   const toggleForm = () => {
     setFormVisible(!isFormVisible);
   }
-  
+
+    const fetchCycleInfo = async () => {
+        if (!userLoggedIn) return; // Ensure userID is provided
+        console.log(currentUser.uid)
+        // Reference to the registerQuestions document for the specific user
+        const cycleInfoRef = doc(db, currentUser.uid, "cycleInfo"); // Use the specific doc ID if needed
+
+        try {
+            const docSnap = await getDoc(cycleInfoRef);
+            if (docSnap.exists()) {
+                const data = docSnap.data();
+
+                return data.cycleStartDate;
+            }
+        }
+        catch (error) {
+        console.error("Error fetching latest question:", error);
+        }
+    } 
+
   const fetchLatestQuestion = async () => {
     if (!userLoggedIn) return; // Ensure userID is provided
     console.log(currentUser.uid)
@@ -108,9 +146,9 @@ const Dashboard = () => {
           
           generateSummary(latestQuestion); // Send data to ChatGPT immediately
         }
-      } else {
+        } else {
         console.log("No document found!");
-      }
+        }
     } catch (error) {
       console.error("Error fetching latest question:", error);
     }
@@ -183,8 +221,8 @@ const Dashboard = () => {
       <div className="w-1/4 bg-gray-100 p-6 shadow-lg">
         <h2 className="text-2xl font-semibold">Today,</h2>
         <p className="text-2xl">{formatDate(currentTime)}</p>
-        <p className="text-2xl">Day 1</p>
-        <p>Current phase:</p>
+        <p className="text-2xl">Day {currentDay}</p>
+        <p>Current phase: {phase}</p>
         <p>Expect</p>
         <p>Upcoming week</p>
       </div>
