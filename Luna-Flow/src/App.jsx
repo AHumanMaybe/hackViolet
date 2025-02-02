@@ -8,7 +8,7 @@ import Dashboard from './Pages/Dashboard'
 import Register from './Pages/Register'
 import Journal from './Components/Journal';
 import './App.css'
-
+//hi
 function App() {
   
   const { currentUser, userLoggedIn } = useAuth()
