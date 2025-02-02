@@ -20,26 +20,27 @@ const Statistics = () => {
   }, []);
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-6 bg-gradient-to-t from-[#A5B4FC] to-[#BAE6FD]">
-      <div className="flex flex-row space-x-6">
+    <div className="flex font-primary flex-col lg:flex-row h-screen pl-90 pb-14 bg-gradient-to-tl from-cyan-300 to-red-300">
+      {/* Main Wrapper with rounded corners */}
+      <div className="flex flex-row lg:flex-row justify-center rounded-[3vw] bg-white/50 p-4 m-8 w-full h-full">
         {/* Cycle Data */}
-        <div className="bg-gray-200 p-6 rounded-lg shadow-md w-[450px]">
-          <h1 className="text-3xl font-bold mb-4">Cycle Statistics</h1>
+        <div className="bg-white p-6 m-8 rounded-[1.5vw] w-[450px]">
+          <h1 className="text-[2.4vw] font-bold mb-4">Cycle Statistics</h1>
           <h2 className="text-xl font-semibold mb-3">Cycle Data</h2>
-          <table className="w-full border-collapse border border-gray-300">
+          <table className="w-full rounded-[1.5vw]">
             <thead>
-              <tr className="bg-gray-300">
-                <th className="border border-gray-400 p-2">Date</th>
-                <th className="border border-gray-400 p-2">Phase</th>
-                <th className="border border-gray-400 p-2">Mood</th>
+              <tr className="bg-gradient-to-br from-red-200/40 to-indigo-200/40 ">
+                <th className="border border-indigo-400 p-2">Date</th>
+                <th className="border border-indigo-400 p-2">Phase</th>
+                <th className="border border-indigo-400 p-2">Mood</th>
               </tr>
             </thead>
             <tbody>
               {cycleData.map((item, index) => (
-                <tr key={index} className="odd:bg-white even:bg-gray-100">
-                  <td className="border border-gray-300 p-2">{item.date}</td>
-                  <td className="border border-gray-300 p-2">{item.phase}</td>
-                  <td className="border border-gray-300 p-2">{item.mood}</td>
+                <tr key={index} className="odd:bg-white even:bg-gray-200/30">
+                  <td className="border border-indigo-200 p-2">{item.date}</td>
+                  <td className="border border-indigo-200 p-2">{item.phase}</td>
+                  <td className="border border-indigo-200 p-2">{item.mood}</td>
                 </tr>
               ))}
             </tbody>
@@ -47,17 +48,17 @@ const Statistics = () => {
         </div>
 
         {/* Mood and Cravings Data */}
-        <div className="bg-gray-100 p-6 rounded-lg shadow-md w-[300px]">
+        <div className="bg-gray-100 p-6 ml-2 m-8 rounded-[1.5vw] shadow-md w-[300px]">
           <h2 className="text-xl font-semibold mb-3">Mood Tracker</h2>
           <ul className="mb-4">
             {moodData.map((mood, index) => (
-              <li key={index} className="p-2 border-b last:border-b-0">Day {index + 1}: Mood Level {mood}</li>
+              <li key={index} className="p-2 border:indigo-400 last:border-b-0">Day {index + 1}: Mood Level {mood}</li>
             ))}
           </ul>
           <h2 className="text-xl font-semibold mb-3">Cravings</h2>
           <ul>
             {cravingsData.map((craving, index) => (
-              <li key={index} className="p-2 border-b last:border-b-0">{craving}</li>
+              <li key={index} className="p-2 border-indigo last:border-b-0">{craving}</li>
             ))}
           </ul>
         </div>

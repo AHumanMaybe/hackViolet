@@ -107,7 +107,7 @@ const EventCalendar = () => {
   return (
     <div className="flex font-primary flex-col lg:flex-row h-screen pl-90 pb-14 bg-gradient-to-tl from-cyan-300 to-red-300">
       {/* Main Wrapper with rounded corners */}
-      <div className="flex flex-row lg:flex-row rounded-[3vw] bg-white/50 p-4 m-8 w-full h-full">
+      <div className="flex flex-row lg:flex-row justify-center rounded-[3vw] bg-white/50 p-4 m-8 w-full h-full">
         
         {/* Left Column: Cycle Calendar */}
         <div className="flex flex-col bg-white p-8 m-6 rounded-[1.5vw] w-[450px]">

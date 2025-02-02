@@ -348,7 +348,7 @@ const Dashboard = () => {
             <p className="text-left text-lg"></p>
             <button
               onClick={handleLearnButton}
-              className="text-sm drop-shadow-md bg-indigo-500 m-6 text-white py-2 px-6 rounded-full hover:outline cursor-pointer block mx-auto"
+              className="text-sm drop-shadow-md bg-indigo-500 mt-20 text-white py-2 px-6 rounded-full hover:outline cursor-pointer block mx-auto"
             >
               Learn More
             </button>

@@ -33,10 +33,10 @@ function Navbar() {
                         <button
                             key={item.path}
                             onClick={() => navigate(item.path)}
-                            className={`flex items-center px-4 py-2 mt-5 text-gray-500 text-xl transition-colors duration-300 transform rounded-full hover:bg-gray-100 hover:text-black
-                                ${isActive(item.path) ? "text-gray-700 bg-gray-100" : "text-gray-600 hover:bg-gray-100 hover:text-gray-700"}`}
+                            className={`flex items-center px-6 py-2 mt-10 text-gray-500 text-xl transition-colors duration-300 transform rounded-full hover:bg-indigo-100/50 hover:text-black
+                                ${isActive(item.path) ? "text-white bg-indigo-500" : "text-gray-600 hover:bg-gray-100 hover:text-gray-700"}`}
                         >
-                            <span className="mx-4 font-medium">{item.name}</span>
+                            <span className="mx-6 mr-40 font-medium">{item.name}</span>
                         </button>
                     ))}
                 </nav>

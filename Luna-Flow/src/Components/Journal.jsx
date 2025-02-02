@@ -67,7 +67,9 @@ function Journal({ customTimestamp }) {
             {/* Submit Button */}
             <button
                 onClick={handleSubmit}
-                className="mt-4 p-2 bg-blue-500 text-white rounded"
+                className="w-full p-3 mt-10 mb-15 bg-indigo-300/80 hover:bg-indigo-500 hover:font-semibold text-black hover:text-white rounded-xl cursor-pointer 
+                        transition-all duration-300 ease-in-out 
+                        hover:shadow-xl hover:shadow-sky-200"
             >
                 Save Entry
             </button>
