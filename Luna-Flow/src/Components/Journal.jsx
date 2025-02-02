@@ -1,6 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getFirestore } from "firebase/firestore";
-import { doc, setDoc } from "firebase/firestore";
+import { getFirestore, doc, setDoc } from "firebase/firestore";
 import { useAuth } from "../Contexts/authContext";
 import { useState } from "react";
 
@@ -15,18 +14,11 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-
 const db = getFirestore(app);
 
-function Journal({ onEntryChange }) {
-    
-    const { currentUser, userLoggedIn } = useAuth()
-
-    const questions = ["What's on your mind?", "What's on your mind?", "What's on your mind?"]
-
-    const [answer, setAnswer] = useState("Enter Answer Here");
-    const [selectedQuestionIndex, setSelectedQuestionIndex] = useState(0);
-    const [answers, setAnswers] = useState({});
+function Journal() {
+    const { currentUser } = useAuth();
+    const [entry, setEntry] = useState("");
 
     const formatTimestamp = () => {
         const date = new Date();
@@ -39,53 +31,35 @@ function Journal({ onEntryChange }) {
         return `${year}-${month}-${day}_${hours}-${minutes}-${seconds}`;
     };
 
-    const handleChange = (e) => {
-        const value = e.target.value;
-        setAnswers((prev) => ({
-            ...prev,
-            [selectedQuestionIndex]: value
-        }));
-        onEntryChange(selectedQuestionIndex, value);
-    };
-
     const handleSubmit = async () => {
-        console.log("All answers: ", answers);
-        const timestamp = formatTimestamp()
-        
-        // Prepare data to store
-        const entryData = {
-            [timestamp]: answers[selectedQuestionIndex] // timestamp as field name, answer as value
-        };
-        try{
-            await setDoc(doc(db, currentUser.uid, "journalEntries"), entryData, {merge: true})
-        } catch (e) {
-            console.log(e)
+        if (!entry.trim()) {
+            alert("Entry cannot be empty!");
+            return;
         }
-    }   
+
+        const timestamp = formatTimestamp();
+        const entryData = {
+            [timestamp]: entry
+        };
+
+        try {
+            await setDoc(doc(db, currentUser.uid, "journalEntries"), entryData, { merge: true });
+            console.log("Entry saved:", entryData);
+            setEntry(""); // Clear input after saving
+        } catch (error) {
+            console.error("Error saving journal entry:", error);
+        }
+    };
 
     return (
         <div className="w-full">
-            {/* Horizontal question selector */}
-            <div className="flex w-1/2 flex-row overflow-x-scroll">
-                {questions.map((question, index) => (
-                    <div
-                        key={index}
-                        className={`p-4 cursor-pointer ${
-                            selectedQuestionIndex === index ? "bg-gray-300" : ""
-                        }`}
-                        onClick={() => setSelectedQuestionIndex(index)}
-                    >
-                        {question}
-                    </div>
-                ))}
-            </div>
-
-            {/* Input field for the selected question */}
-            <input
+            {/* Input field */}
+            <textarea
                 className="w-full p-2 mt-4 border rounded"
-                value={answers[selectedQuestionIndex] || ""}
-                onChange={handleChange}
-                placeholder="Enter Answer Here"
+                value={entry}
+                onChange={(e) => setEntry(e.target.value)}
+                placeholder="Write your journal entry here..."
+                rows={4}
             />
 
             {/* Submit Button */}
@@ -93,7 +67,7 @@ function Journal({ onEntryChange }) {
                 onClick={handleSubmit}
                 className="mt-4 p-2 bg-blue-500 text-white rounded"
             >
-                Submit Answers
+                Save Entry
             </button>
         </div>
     );
