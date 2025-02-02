@@ -88,20 +88,20 @@ function Login() {
     return (
         <div className="font-primary flex flex-col lg:flex-row h-screen pl-90 pb-14 bg-gradient-to-tl from-cyan-300 to-red-300">
           {/* Main Wrapper with rounded corners */}
-          <div className="flex flex-col lg:flex-row rounded-[3vw] bg-white/50 p-6 m-8 w-full h-full">
-            <div className="flex flex-col items-center justify-center h-full bg-white text-black">
-              <h1 className="mb-5 text-4xl font-bold">Welcome to LunaFlow</h1>
-              <div className="bg-gradient-to-br from-cyan-200/50 to-red-200/50 p-8 m-10 rounded-lg w-[400px] text-center">
+          <div className="flex flex-col lg:flex-row rounded-[3vw] justify-center bg-white/50 p-6 m-8 w-full h-full">
+            <div className="flex flex-col items-center p-20 justify-center rounded-[1.5vw] h-full text-black">
+             <h1 className="mb-5 text-4xl font-bold">Welcome to LunaFlow</h1>
+              <div className="bg-white p-20 m-8 rounded-xl w-[800px] text-center shadow-lg shadow-[rgba(255, 130, 207, 0.97)_0px_0px_15px_0px,rgba(14, 191, 250, 0.5)_0px_0px_15px_0px]">
                 {isMakeNewAccount ? (
                   <>
-                    <h2 className="text-xl font-semibold">Register</h2>
+                    <h2 className="text-[2vw] font-light mb-6">Register</h2>
                     <input
                       type="email"
                       name="email"
                       placeholder="Email"
                       value={registerData.email}
                       onChange={handleRegisterChange}
-                      className="w-full p-3 mb-3 border border-gray-300 rounded-md"
+                      className="w-full p-3 mb-3 border border-indigo-300 rounded-xl"
                     />
                     <input
                       type="text"
@@ -109,7 +109,7 @@ function Login() {
                       placeholder="Username"
                       value={registerData.username}
                       onChange={handleRegisterChange}
-                      className="w-full p-3 mb-3 border border-gray-300 rounded-md"
+                      className="w-full p-3 mb-3 border border-indigo-300 rounded-xl"
                     />
                     <input
                       type="password"
@@ -117,34 +117,36 @@ function Login() {
                       placeholder="Password"
                       value={registerData.password}
                       onChange={handleRegisterChange}
-                      className="w-full p-3 mb-3 border border-gray-300 rounded-md"
+                      className="w-full p-3 mb-3 border border-indigo-300 rounded-xl"
                     />
                     <button
                       onClick={handleRegister}
-                      className="w-full p-3 bg-gray-300 text-black rounded-md cursor-pointer"
+                      className="w-full p-3 mt-10 mb-15 bg-amber-300/80 hover:bg-amber-500 hover:font-semibold text-black rounded-xl cursor-pointer 
+                        transition-all duration-300 ease-in-out 
+                        hover:shadow-xl hover:shadow-sky-200"
                     >
-                      Register
+                      Start your journey now
                     </button>
                     <p className="mt-4">
-                      Already have an account?{" "}
+                      Come here often?{" "}
                       <span
                         onClick={() => setIsMakeNewAccount(false)}
-                        className="text-blue-500 cursor-pointer"
+                        className="text-indigo-500 font-bold hover:text-amber-400 cursor-pointer"
                       >
-                        Login here
+                           Login here
                       </span>
                     </p>
                   </>
                 ) : (
                   <>
-                    <h2 className="text-xl font-semibold">Login</h2>
+                    <h2 className="text-[2vw] font-light mb-6">Log In</h2>
                     <input
                       type="email"
                       name="email"
                       placeholder="Email"
                       value={loginData.email}
                       onChange={handleLoginChange}
-                      className="w-full p-3 mb-3 border border-gray-300 rounded-md"
+                      className="w-full p-3 mb-3 border border-indigo-300 rounded-xl"
                     />
                     <input
                       type="password"
@@ -152,22 +154,24 @@ function Login() {
                       placeholder="Password"
                       value={loginData.password}
                       onChange={handleLoginChange}
-                      className="w-full p-3 mb-3 border border-gray-300 rounded-md"
+                      className="w-full p-3 mb-3 border border-indigo-300 rounded-xl"
                     />
                     <button
-                      onClick={handleLogin}
-                      className="w-full p-3 bg-gray-300 text-black rounded-md cursor-pointer"
-                    >
-                      Login
+                        onClick={handleLogin}
+                        className="w-full p-3 mt-10 mb-15 bg-amber-300/80 hover:bg-amber-400 hover:font-semibold text-black rounded-xl cursor-pointer 
+                                    transition-all duration-300 ease-in-out 
+                                    hover:shadow-xl hover:shadow-sky-200"
+                        >
+                        Let's go
                     </button>
                     <p className="mt-4 text-red-500">{errorMessage}</p>
                     <p className="mt-4">
-                      Don't have an account?{" "}
+                      New here?{" "}
                       <span
                         onClick={() => setIsMakeNewAccount(true)}
-                        className="text-blue-500 cursor-pointer"
+                        className="text-indigo-500 font-bold hover:text-amber-500 cursor-pointer"
                       >
-                        Register here
+                        Sign up!
                       </span>
                     </p>
                   </>

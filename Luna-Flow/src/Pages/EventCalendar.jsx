@@ -105,29 +105,37 @@ const EventCalendar = () => {
   };
 
   return (
-    <div className="font-primary min-h-screen flex items-center justify-center p-6 bg-gradient-to-t from-[#A5B4FC] to-[#BAE6FD]">
-      <div className="flex flex-row space-x-6">
-        <div className="bg-gray-200 p-8 rounded-lg w-[450px]">
-          <h1 className="text-3xl font-bold mb-6">Cycle Calendar</h1>
+    <div className="flex font-primary flex-col lg:flex-row h-screen pl-90 pb-14 bg-gradient-to-tl from-cyan-300 to-red-300">
+      {/* Main Wrapper with rounded corners */}
+      <div className="flex flex-row lg:flex-row rounded-[3vw] bg-white/50 p-4 m-8 w-full h-full">
+        
+        {/* Left Column: Cycle Calendar */}
+        <div className="flex flex-col bg-white p-8 m-6 rounded-[1.5vw] w-[450px]">
+          <h1 className="text-[1.9vw] text-center font-bold mb-6">Cycle Calendar</h1>
           <h2 className="text-xl font-semibold mb-4">Select a Date</h2>
-          <Calendar onChange={handleDateChange} value={selectedDate} className="mb-4" />
+          <Calendar onChange={handleDateChange} value={selectedDate} className="w-full h-[400px] mb-4" />
           <Journal customTimestamp={formatDate(selectedDate)} />
         </div>
-        <div className="bg-gray-100 p-6 rounded-lg shadow-md w-[300px]">
-          <h3 className="text-lg font-semibold">Logged journal on {formatDate(selectedDate).substring(0, formatDate(selectedDate).indexOf("_"))}:</h3>
+        
+        {/* Right Column: Logged Journal */}
+        <div className="bg-white p-8 m-6 rounded-[1.5vw] w-[300px]">
+          <h3 className="text-lg font-semibold">
+            Logged journal on {formatDate(selectedDate).substring(0, formatDate(selectedDate).indexOf("_"))}:
+          </h3>
           <ul>
             {events.length > 0 ? (
               events.map((event, index) => (
-                <li key={index} className="border-b p-2 last:border-b-0">{event}</li> // Show event title
+                <li key={index} className="border-b p-2 last:border-b-0">{event}</li>
               ))
             ) : (
-              <p className="text-gray-500">No entries for this date.</p>
+              <p className="text-gray-500 mt-8">No entries for this date.</p>
             )}
           </ul>
         </div>
       </div>
     </div>
   );
+  
 };
 
 export default EventCalendar;
