@@ -1,7 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore, doc, setDoc } from "firebase/firestore";
 import { useAuth } from "../Contexts/authContext";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const firebaseConfig = {
     apiKey: "AIzaSyBHZGxb3ckOGzr-Jdrfaxp4kJOJ-m6zqE0",
@@ -16,7 +16,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-function Journal() {
+function Journal({ customTimestamp }) {
     const { currentUser } = useAuth();
     const [entry, setEntry] = useState("");
 
@@ -37,7 +37,9 @@ function Journal() {
             return;
         }
 
-        const timestamp = formatTimestamp();
+        // Use custom timestamp prop if available, otherwise use the current timestamp
+        const timestamp = customTimestamp || formatTimestamp();
+        
         const entryData = {
             [timestamp]: entry
         };
@@ -52,7 +54,7 @@ function Journal() {
     };
 
     return (
-        <div className="w-full">
+        <div className="flex flex-col w-96">
             {/* Input field */}
             <textarea
                 className="w-full p-2 mt-4 border rounded"
@@ -65,7 +67,9 @@ function Journal() {
             {/* Submit Button */}
             <button
                 onClick={handleSubmit}
-                className="mt-4 p-2 bg-blue-500 text-white rounded"
+                className="w-full p-3 mt-10 mb-15 bg-indigo-300/80 hover:bg-indigo-500 hover:font-semibold text-black hover:text-white rounded-xl cursor-pointer 
+                        transition-all duration-300 ease-in-out 
+                        hover:shadow-xl hover:shadow-sky-200"
             >
                 Save Entry
             </button>
